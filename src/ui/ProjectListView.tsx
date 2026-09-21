@@ -7,11 +7,19 @@
 import { useRef, useState } from 'react'
 import { createProject } from '../domain/factory'
 import type { Project } from '../domain/types'
+import type { BrickType } from '../domain/types'
 import { deleteProject, exportAll, importAll, saveProject } from '../storage/repo'
+import { ExcelImport } from './ExcelImport'
 import { navigate } from './router'
 import { Button, Card, Empty, TextField } from './components'
 
-export function ProjectListView({ projects }: { projects: Project[] }) {
+export function ProjectListView({
+  projects,
+  brickTypes,
+}: {
+  projects: Project[]
+  brickTypes: BrickType[]
+}) {
   const [name, setName] = useState('')
   const fileInput = useRef<HTMLInputElement>(null)
   const [message, setMessage] = useState<string | null>(null)
@@ -70,6 +78,8 @@ export function ProjectListView({ projects }: { projects: Project[] }) {
           </div>
         </div>
       </Card>
+
+      <ExcelImport brickTypes={brickTypes} />
 
       <Card
         title="Bauvorhaben"

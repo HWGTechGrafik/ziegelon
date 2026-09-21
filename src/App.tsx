@@ -114,7 +114,7 @@ function Shell({ license, theme }: { license: LicenseInfo; theme: Theme }) {
             <p className="empty">Wird geladen …</p>
           )
         ) : (
-          <ProjectListView projects={projects} />
+          <ProjectListView projects={projects} brickTypes={brickTypes} />
         )}
       </main>
 
