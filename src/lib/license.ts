@@ -56,26 +56,30 @@ export const tidy = (input: string): string => input.replace(/\s+/g, '')
 
 let cachedKey: CryptoKey | null = null
 
-async function publicKey(): Promise<CryptoKey> {
-  if (!cachedKey) {
-    cachedKey = await crypto.subtle.importKey(
-      'jwk',
-      LICENSE_PUBLIC_KEY,
-      { name: 'ECDSA', namedCurve: 'P-256' },
-      false,
-      ['verify'],
-    )
-  }
+async function publicKey(jwk: JsonWebKey): Promise<CryptoKey> {
+  const einlesen = () =>
+    crypto.subtle.importKey('jwk', jwk, { name: 'ECDSA', namedCurve: 'P-256' }, false, [
+      'verify',
+    ])
+  // Nur der ausgelieferte Schluessel wird gemerkt. Ein mitgegebener kommt aus
+  // dem Test und waere im Zwischenspeicher nur im Weg.
+  if (jwk !== LICENSE_PUBLIC_KEY) return einlesen()
+  if (!cachedKey) cachedKey = await einlesen()
   return cachedKey
 }
 
 /**
  * Prueft einen Schluessel. Ein abgelaufener Schluessel wird eigens gemeldet -
  * "ungueltig" waere hier irrefuehrend, der Kunde hatte ja einmal eine Lizenz.
+ *
+ * `key` ist nur fuer den Test da: der bringt ein frisch erzeugtes Paar mit,
+ * damit kein privater Schluessel im Repo liegen muss. Die App ruft immer ohne
+ * auf und prueft damit gegen den ausgelieferten oeffentlichen Schluessel.
  */
 export async function verifyLicense(
   input: string,
   today: Date = new Date(),
+  key: JsonWebKey = LICENSE_PUBLIC_KEY,
 ): Promise<LicenseResult> {
   const parts = tidy(input).split('.')
   if (parts.length !== 3 || parts[0] !== PREFIX) {
@@ -104,7 +108,7 @@ export async function verifyLicense(
 
   const valid = await crypto.subtle.verify(
     { name: 'ECDSA', hash: 'SHA-256' },
-    await publicKey(),
+    await publicKey(key),
     sig,
     signed,
   )
