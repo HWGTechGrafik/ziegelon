@@ -88,10 +88,16 @@ export function LockScreen({ onUnlocked }: { onUnlocked: (info: LicenseInfo) => 
           </button>
         </div>
 
+        {/*
+          Bewusst ohne accept-Filter. iOS uebersetzt Endungen in eigene
+          Typkennungen; fuer .ziegelon gibt es dort keine, also faellt der
+          Eintrag weg und die Lizenzdatei laesst sich nicht auswaehlen. Ein
+          Filter waere hier ohnehin nur Bequemlichkeit - was wirklich zaehlt,
+          prueft die Signatur.
+        */}
         <input
           ref={fileInput}
           type="file"
-          accept=".ziegelon,.txt,text/plain"
           hidden
           onChange={(e) => {
             const file = e.target.files?.[0]
