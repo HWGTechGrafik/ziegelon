@@ -10,14 +10,17 @@ import { parseNumber, toInput } from './format'
 export function Card({
   title,
   actions,
+  className,
   children,
 }: {
   title?: ReactNode
   actions?: ReactNode
+  /** Zusatzklasse fuer Karten, die sich abheben sollen - etwa card-section. */
+  className?: string
   children: ReactNode
 }) {
   return (
-    <section className="card">
+    <section className={className ? `card ${className}` : 'card'}>
       {(title || actions) && (
         <header className="card-head">
           {title && <h2>{title}</h2>}

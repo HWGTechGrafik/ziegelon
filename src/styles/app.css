@@ -330,6 +330,21 @@ body {
   gap: 12px;
 }
 
+/*
+ * Ein Wandabschnitt bekommt ein sichtbares Dach.
+ *
+ * Fuenf Abschnitte untereinander sahen beim Blaettern wie ein einziger langer
+ * Block aus - wo einer aufhoerte und der naechste anfing, war nur am Abstand
+ * zu erahnen. Das getoente Kopfband sagt es auf einen Blick.
+ */
+.card-section > .card-head {
+  margin: -16px -16px 4px;
+  padding: 12px 16px;
+  background: var(--bg);
+  border-bottom: 1px solid var(--line);
+  border-radius: var(--radius) var(--radius) 0 0;
+}
+
 .card-head {
   display: flex;
   align-items: flex-start;
@@ -382,6 +397,38 @@ h3.sub {
 h4 {
   margin: 0 0 8px;
   font-size: 15px;
+}
+
+/* ---------- Gruppenkopf ---------- */
+
+/*
+ * Naht zwischen dem Bauvorhaben und dem, was darin steckt.
+ *
+ * Vorher standen die Karte des Bauvorhabens und die der Wandabschnitte als
+ * gleich aussehende Kaesten untereinander - man sah nicht, was Kopf ist und
+ * was dazugehoert. Die Linie traegt die Beschriftung und die Anzahl und
+ * kostet kaum Hoehe, was am Handy zaehlt.
+ */
+.group-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 6px 4px -6px;
+}
+
+.group-head h3 {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink-muted);
+}
+
+.group-rule {
+  flex: 1;
+  height: 1px;
+  background: var(--line);
 }
 
 /* ---------- Formularfelder ---------- */

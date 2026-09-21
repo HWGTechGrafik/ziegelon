@@ -25,6 +25,9 @@ export function ProjectView({
   brickTypes: BrickType[]
 }) {
   const [tab, setTab] = useState<Tab>('walls')
+  // Ein gerade angelegter oder kopierter Abschnitt geht offen auf. Sonst
+  // sieht es so aus, als haette der Knopf nichts getan.
+  const [zuletztAngelegt, setZuletztAngelegt] = useState<string | null>(null)
 
   const result = useMemo(
     () => calcProject(project, brickTypes),
@@ -38,7 +41,9 @@ export function ProjectView({
   const addSection = () => {
     const first = brickTypes[0]
     if (!first) return
-    update({ ...project, sections: [...project.sections, createWallSection(first.id)] })
+    const abschnitt = createWallSection(first.id)
+    setZuletztAngelegt(abschnitt.id)
+    update({ ...project, sections: [...project.sections, abschnitt] })
   }
 
   const patchSection = (section: WallSection) =>
@@ -55,8 +60,11 @@ export function ProjectView({
       ),
     })
 
-  const copySection = (section: WallSection) =>
-    update({ ...project, sections: [...project.sections, duplicateSection(section)] })
+  const copySection = (section: WallSection) => {
+    const kopie = duplicateSection(section)
+    setZuletztAngelegt(kopie.id)
+    update({ ...project, sections: [...project.sections, kopie] })
+  }
 
   const totals = result.demand.reduce(
     (acc, row) => {
@@ -133,6 +141,13 @@ export function ProjectView({
               </Empty>
             </Card>
           )}
+          {sections.length > 0 && (
+            <div className="group-head">
+              <h3>Wandabschnitte</h3>
+              <span className="badge">{fmt(sections.length)}</span>
+              <span className="group-rule" aria-hidden="true" />
+            </div>
+          )}
           {sections.map((section) => (
             <SectionCard
               key={section.id}
@@ -142,6 +157,7 @@ export function ProjectView({
               onChange={patchSection}
               onDelete={() => removeSection(section.id)}
               onDuplicate={() => copySection(section)}
+              defaultOpen={section.id === zuletztAngelegt}
             />
           ))}
           <div className="btn-row">

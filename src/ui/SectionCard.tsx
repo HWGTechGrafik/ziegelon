@@ -5,6 +5,7 @@
  * Das Ergebnis steht direkt unter der Eingabe und rechnet beim Tippen mit.
  * In der Excel musste man dafuer ans andere Ende des Blatts scrollen.
  */
+import { useState } from 'react'
 import {
   BEARING_MAX_CM,
   BEARING_MIN_CM,
@@ -33,6 +34,8 @@ interface Props {
   onChange: (section: WallSection) => void
   onDelete: () => void
   onDuplicate: () => void
+  /** Frisch angelegte und kopierte Abschnitte gehen offen auf. */
+  defaultOpen?: boolean
 }
 
 export function SectionCard({
@@ -42,7 +45,9 @@ export function SectionCard({
   onChange,
   onDelete,
   onDuplicate,
+  defaultOpen = false,
 }: Props) {
+  const [open, setOpen] = useState(defaultOpen)
   const patch = (changes: Partial<WallSection>) =>
     onChange({ ...section, ...changes, updatedAt: now() })
 
@@ -69,25 +74,57 @@ export function SectionCard({
   const zeigtStaerke =
     staerke !== null && (section.label ?? '').replace(/\s/g, '') !== staerke.replace(/\s/g, '')
 
+  // Zusammenfassung fuer die zugeklappte Zeile: der Ziegeltyp und die beiden
+  // Zahlen, die man beim Durchblaettern vergleicht.
+  const summary = [
+    brick?.name,
+    result ? `${fmt(result.netAreaSqm)} m² netto` : null,
+    result ? `${fmtInt(result.brickPallets)} Paletten` : null,
+  ]
+    .filter(Boolean)
+    .join(' · ')
+
   return (
     <Card
+      // Kopfband nur am aufgeklappten Abschnitt - zugeklappt ist die Zeile
+      // ohnehin schon eine Zeile.
+      {...(open ? { className: 'card-section' } : {})}
       title={
-        <span className="section-title">
-          {section.label || 'Wandabschnitt'}
-          {zeigtStaerke && <span className="badge">{staerke}</span>}
-        </span>
+        <button
+          type="button"
+          className="disclosure"
+          aria-expanded={open}
+          onClick={() => setOpen(!open)}
+        >
+          <span className={open ? 'disclosure-mark open' : 'disclosure-mark'} aria-hidden="true">
+            ›
+          </span>
+          <span className="disclosure-text">
+            <span className="disclosure-title section-title">
+              {section.label || 'Wandabschnitt'}
+              {zeigtStaerke && <span className="badge">{staerke}</span>}
+            </span>
+            {summary && <span className="disclosure-summary">{summary}</span>}
+          </span>
+        </button>
       }
       actions={
-        <>
-          <Button onClick={onDuplicate} title="Abschnitt kopieren">
-            Kopieren
-          </Button>
-          <Button variant="danger" onClick={onDelete} title="Abschnitt loeschen">
-            Löschen
-          </Button>
-        </>
+        open ? (
+          <>
+            <Button onClick={onDuplicate} title="Abschnitt kopieren">
+              Kopieren
+            </Button>
+            <Button variant="danger" onClick={onDelete} title="Abschnitt loeschen">
+              Löschen
+            </Button>
+          </>
+        ) : (
+          <Button onClick={() => setOpen(true)}>Bearbeiten</Button>
+        )
       }
     >
+      {!open ? null : (
+      <>
       <div className="grid grid-2">
         <TextField
           label="Bezeichnung"
@@ -248,6 +285,8 @@ export function SectionCard({
       </div>
 
       {result && <SectionResultView result={result} />}
+      </>
+      )}
     </Card>
   )
 }
