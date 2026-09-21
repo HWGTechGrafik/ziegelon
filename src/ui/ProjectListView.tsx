@@ -7,19 +7,11 @@
 import { useState } from 'react'
 import { createProject } from '../domain/factory'
 import type { Project } from '../domain/types'
-import type { BrickType } from '../domain/types'
 import { deleteProject, saveProject } from '../storage/repo'
-import { ExcelImport } from './ExcelImport'
 import { navigate } from './router'
 import { Button, Card, Empty, TextField } from './components'
 
-export function ProjectListView({
-  projects,
-  brickTypes,
-}: {
-  projects: Project[]
-  brickTypes: BrickType[]
-}) {
+export function ProjectListView({ projects }: { projects: Project[] }) {
   const [name, setName] = useState('')
 
   const add = async () => {
@@ -39,26 +31,21 @@ export function ProjectListView({
 
   return (
     <>
-      {/* Zwei Wege zum selben Ziel - leer anfangen oder die alte Mappe uebernehmen. */}
-      <div className="start-row">
-        <ExcelImport brickTypes={brickTypes} />
-
-        <Card title="Neues Bauvorhaben">
-          <div className="grid grid-2">
-            <TextField
-              label="Bezeichnung"
-              value={name}
-              onChange={setName}
-              placeholder="z. B. Einfamilienhaus Huber"
-            />
-            <div className="field field-action">
-              <Button variant="primary" onClick={() => void add()} disabled={!name.trim()}>
-                Anlegen
-              </Button>
-            </div>
+      <Card title="Neues Bauvorhaben">
+        <div className="grid grid-2">
+          <TextField
+            label="Bezeichnung"
+            value={name}
+            onChange={setName}
+            placeholder="z. B. Einfamilienhaus Huber"
+          />
+          <div className="field field-action">
+            <Button variant="primary" onClick={() => void add()} disabled={!name.trim()}>
+              Anlegen
+            </Button>
           </div>
-        </Card>
-      </div>
+        </div>
+      </Card>
 
       <Card title="Bauvorhaben">
         {projects.length === 0 ? (

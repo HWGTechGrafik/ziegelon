@@ -1,11 +1,13 @@
 /**
- * Einstellungen: Darstellung, Sicherung und Auskunft zur Lizenz.
+ * Einstellungen: Darstellung, Uebernahme aus der alten Excel, Sicherung und
+ * Auskunft zur Lizenz.
  */
-import { DEFAULT_THEME, type Theme } from '../domain/types'
+import { DEFAULT_THEME, type BrickType, type Theme } from '../domain/types'
 import { formatDate, type LicenseInfo } from '../lib/license'
 import { IS_DEVELOPMENT_KEY } from '../lib/license-key'
 import { saveTheme } from '../storage/repo'
 import { BackupCard } from './BackupCard'
+import { ExcelImport } from './ExcelImport'
 import { Card } from './components'
 import { applyTheme } from './theme'
 
@@ -18,9 +20,11 @@ const CHOICES: Array<{ value: Theme; label: string; hint: string }> = [
 export function SettingsView({
   theme,
   license,
+  brickTypes,
 }: {
   theme: Theme | undefined
   license: LicenseInfo
+  brickTypes: BrickType[]
 }) {
   const current = theme ?? DEFAULT_THEME
 
@@ -53,6 +57,14 @@ export function SettingsView({
           Schriftzug ist in Markendunkel gehalten und wäre dort nicht lesbar.
         </p>
       </Card>
+
+      {/*
+        Steht hier und nicht auf der Startseite: die Uebernahme aus der alten
+        Mappe ist ein Schritt, den man je Bauvorhaben einmal geht. Auf der
+        Startseite nahm sie dauerhaft Platz weg von dem, was man taeglich
+        braucht - der Liste der Bauvorhaben.
+      */}
+      <ExcelImport brickTypes={brickTypes} />
 
       <BackupCard />
 

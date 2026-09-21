@@ -114,7 +114,7 @@ function Shell({ license, theme }: { license: LicenseInfo; theme: Theme }) {
         ) : route.view === 'catalog' ? (
           <CatalogView brickTypes={brickTypes} />
         ) : route.view === 'settings' ? (
-          <SettingsView theme={theme} license={license} />
+          <SettingsView theme={theme} license={license} brickTypes={brickTypes} />
         ) : route.view === 'project' ? (
           answersRoute && lookup?.project ? (
             <ProjectView project={lookup.project} brickTypes={brickTypes} />
@@ -122,7 +122,7 @@ function Shell({ license, theme }: { license: LicenseInfo; theme: Theme }) {
             <p className="empty">Wird geladen …</p>
           )
         ) : (
-          <ProjectListView projects={projects} brickTypes={brickTypes} />
+          <ProjectListView projects={projects} />
         )}
       </main>
 
