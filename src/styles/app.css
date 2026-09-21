@@ -267,7 +267,11 @@ body {
 .card-actions {
   display: flex;
   gap: 8px;
-  flex-shrink: 0;
+  /* Drei Schalter nebeneinander - im Katalog sind es so viele - passen am
+     schmalen Handy nicht in eine Zeile. Sie duerfen deshalb umbrechen; ein
+     'flex-shrink: 0' stand dem im Weg, weil der Block dann seine volle Breite
+     behielt und die Karte ueber den Bildschirmrand schob. */
+  flex-wrap: wrap;
 }
 
 .section-title {

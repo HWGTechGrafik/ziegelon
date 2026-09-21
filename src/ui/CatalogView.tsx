@@ -11,9 +11,12 @@ import { newId, now } from '../domain/factory'
 import type { BrickType } from '../domain/types'
 import { saveBrickType, deleteBrickType } from '../storage/repo'
 import { fmt } from './format'
+import { useCatalogExcel } from './CatalogExcel'
 import { Button, Card, Empty, NumberField, TextField } from './components'
 
 export function CatalogView({ brickTypes }: { brickTypes: BrickType[] }) {
+  const excel = useCatalogExcel(brickTypes)
+
   const addType = () =>
     void saveBrickType({
       id: newId(),
@@ -32,15 +35,22 @@ export function CatalogView({ brickTypes }: { brickTypes: BrickType[] }) {
       <Card
         title="Ziegel-Katalog"
         actions={
-          <Button variant="primary" onClick={addType}>
-            + Ziegeltyp
-          </Button>
+          <>
+            {excel.actions}
+            <Button variant="primary" onClick={addType}>
+              + Ziegeltyp
+            </Button>
+          </>
         }
       >
         <p className="hint">
           Diese Werte bestimmen die Berechnung. Die Überlegerbreite legt fest, wie
-          viele Überleger nebeneinander in die Wandstärke passen.
+          viele Überleger nebeneinander in die Wandstärke passen. „Als Excel“ gibt
+          den Katalog als Tabelle aus; beim Einlesen zählt die Spalte „Kennung“,
+          nur damit findet ein umbenannter Ziegeltyp zu sich selbst zurück.
+          Gelöscht wird dabei nichts.
         </p>
+        {excel.panel}
         {brickTypes.length === 0 && <Empty>Noch kein Ziegeltyp angelegt.</Empty>}
       </Card>
 
