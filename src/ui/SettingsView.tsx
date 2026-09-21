@@ -1,10 +1,11 @@
 /**
- * Einstellungen: Darstellung und Auskunft zur Lizenz.
+ * Einstellungen: Darstellung, Sicherung und Auskunft zur Lizenz.
  */
 import { DEFAULT_THEME, type Theme } from '../domain/types'
 import { formatDate, type LicenseInfo } from '../lib/license'
 import { IS_DEVELOPMENT_KEY } from '../lib/license-key'
 import { saveTheme } from '../storage/repo'
+import { BackupCard } from './BackupCard'
 import { Card } from './components'
 import { applyTheme } from './theme'
 
@@ -52,6 +53,8 @@ export function SettingsView({
           Schriftzug ist in Markendunkel gehalten und wäre dort nicht lesbar.
         </p>
       </Card>
+
+      <BackupCard />
 
       <Card title="Lizenz">
         <dl className="stats">

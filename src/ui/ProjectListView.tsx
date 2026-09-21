@@ -4,11 +4,11 @@
  * Die alte Excel kannte nur ein Bauvorhaben je Datei. Hier liegen sie
  * nebeneinander, das zuletzt bearbeitete oben.
  */
-import { useRef, useState } from 'react'
+import { useState } from 'react'
 import { createProject } from '../domain/factory'
 import type { Project } from '../domain/types'
 import type { BrickType } from '../domain/types'
-import { deleteProject, exportAll, importAll, saveProject } from '../storage/repo'
+import { deleteProject, saveProject } from '../storage/repo'
 import { ExcelImport } from './ExcelImport'
 import { navigate } from './router'
 import { Button, Card, Empty, TextField } from './components'
@@ -21,8 +21,6 @@ export function ProjectListView({
   brickTypes: BrickType[]
 }) {
   const [name, setName] = useState('')
-  const fileInput = useRef<HTMLInputElement>(null)
-  const [message, setMessage] = useState<string | null>(null)
 
   const add = async () => {
     const trimmed = name.trim()
@@ -36,28 +34,6 @@ export function ProjectListView({
   const remove = async (project: Project) => {
     if (window.confirm(`Bauvorhaben "${project.name}" wirklich löschen?`)) {
       await deleteProject(project.id)
-    }
-  }
-
-  const doExport = async () => {
-    const json = await exportAll()
-    const blob = new Blob([json], { type: 'application/json' })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = `Ziegelon_Sicherung_${new Date().toISOString().slice(0, 10)}.json`
-    a.click()
-    URL.revokeObjectURL(url)
-  }
-
-  const doImport = async (file: File) => {
-    try {
-      const summary = await importAll(await file.text())
-      setMessage(
-        `${summary.projects} Bauvorhaben und ${summary.brickTypes} Ziegeltypen übernommen.`,
-      )
-    } catch (error) {
-      setMessage(error instanceof Error ? error.message : 'Die Datei ließ sich nicht lesen.')
     }
   }
 
@@ -81,28 +57,7 @@ export function ProjectListView({
 
       <ExcelImport brickTypes={brickTypes} />
 
-      <Card
-        title="Bauvorhaben"
-        actions={
-          <>
-            <Button onClick={() => void doExport()}>Sichern</Button>
-            <Button onClick={() => fileInput.current?.click()}>Einspielen</Button>
-          </>
-        }
-      >
-        <input
-          ref={fileInput}
-          type="file"
-          accept="application/json,.json"
-          hidden
-          onChange={(e) => {
-            const file = e.target.files?.[0]
-            if (file) void doImport(file)
-            e.target.value = ''
-          }}
-        />
-        {message && <p className="hint">{message}</p>}
-
+      <Card title="Bauvorhaben">
         {projects.length === 0 ? (
           <Empty>Noch kein Bauvorhaben angelegt.</Empty>
         ) : (
