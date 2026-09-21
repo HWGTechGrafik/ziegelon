@@ -14,6 +14,7 @@ import { applyTheme } from './ui/theme'
 import { LicenseLine, LockScreen } from './ui/LockScreen'
 import { ProjectListView } from './ui/ProjectListView'
 import { ProjectView } from './ui/ProjectView'
+import { UpdateHinweis } from './ui/UpdateHinweis'
 import { hrefFor, navigate, useRoute } from './ui/router'
 import { VERSION_KURZ } from './version'
 
@@ -52,7 +53,15 @@ export function App() {
   }, [theme])
 
   if (!licenseChecked) return <p className="empty">Wird geladen …</p>
-  if (!license) return <LockScreen onUnlocked={setLicense} />
+  // Der Hinweis liegt ausserhalb der Sperre: auch ein noch nicht
+  // freigeschaltetes Geraet soll die neuere Fassung holen koennen.
+  if (!license)
+    return (
+      <>
+        <LockScreen onUnlocked={setLicense} />
+        <UpdateHinweis />
+      </>
+    )
 
   return <Shell license={license} theme={theme ?? DEFAULT_THEME} />
 }
@@ -131,6 +140,8 @@ function Shell({ license, theme }: { license: LicenseInfo; theme: Theme }) {
         <LicenseLine info={license} />
         <p className="version-line">{VERSION_KURZ}</p>
       </footer>
+
+      <UpdateHinweis />
     </div>
   )
 }

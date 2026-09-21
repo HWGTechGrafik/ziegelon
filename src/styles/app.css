@@ -289,6 +289,53 @@ body {
   gap: 12px;
 }
 
+/* ---------- Hinweis auf eine neue Fassung ---------- */
+
+/*
+ * Legt sich unten quer, statt den Bildschirm zu sperren: wer gerade misst,
+ * soll weiterarbeiten koennen. Ueber dem Rand, damit ihn am Handy weder die
+ * Fusszeile noch die Gestensteuerung verdeckt.
+ */
+.update-hinweis {
+  position: fixed;
+  left: 12px;
+  right: 12px;
+  bottom: max(12px, env(safe-area-inset-bottom));
+  z-index: 20;
+  margin: 0 auto;
+  max-width: 640px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 12px 16px;
+  background: var(--surface);
+  border: 1px solid var(--accent);
+  border-radius: var(--radius);
+  box-shadow: 0 6px 20px rgba(25, 34, 43, 0.18);
+}
+
+.update-hinweis p {
+  margin: 0;
+  flex: 1 1 240px;
+  min-width: 0;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.update-schalter {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+@media print {
+  .update-hinweis {
+    display: none;
+  }
+}
+
 /* ---------- Karten ---------- */
 
 .card {

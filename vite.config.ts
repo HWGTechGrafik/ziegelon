@@ -67,7 +67,9 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({
-      registerType: 'autoUpdate',
+      // Kein autoUpdate: stilles Neuladen verschluckt einen halb erfassten
+      // Wandabschnitt. Die App fragt stattdessen (siehe UpdateHinweis).
+      registerType: 'prompt',
       includeAssets: ['favicon.ico', 'icons/apple-touch-icon.png'],
       manifest: {
         name: 'Ziegelon',
