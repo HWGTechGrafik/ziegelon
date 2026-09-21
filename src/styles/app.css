@@ -203,6 +203,41 @@ body {
   gap: 16px;
 }
 
+/* ---------- Einstieg ---------- */
+
+/*
+ * Anlegen und Excel-Uebernahme stehen nebeneinander: beides faengt ein
+ * Bauvorhaben an, keins ist dem anderen untergeordnet. Am Handy rutscht die
+ * Uebernahme nach oben, weil sie waehrend der Umstellung von der alten Mappe
+ * der haeufigere Weg ist.
+ */
+.start-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+/*
+ * Sobald die Vorschau offen ist, braucht ihre Tabelle die ganze Breite -
+ * sonst quetscht sie sich in eine halbe Spalte.
+ */
+.start-row:has(.import-preview) {
+  grid-template-columns: 1fr;
+}
+
+@media (max-width: 720px) {
+  .start-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Haelt den Abstand der Karte, obwohl die Vorschau ein eigener Rahmen ist. */
+.import-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
 /* ---------- Karten ---------- */
 
 .card {

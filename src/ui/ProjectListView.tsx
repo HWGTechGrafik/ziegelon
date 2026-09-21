@@ -39,23 +39,26 @@ export function ProjectListView({
 
   return (
     <>
-      <Card title="Neues Bauvorhaben">
-        <div className="grid grid-2">
-          <TextField
-            label="Bezeichnung"
-            value={name}
-            onChange={setName}
-            placeholder="z. B. Einfamilienhaus Huber"
-          />
-          <div className="field field-action">
-            <Button variant="primary" onClick={() => void add()} disabled={!name.trim()}>
-              Anlegen
-            </Button>
-          </div>
-        </div>
-      </Card>
+      {/* Zwei Wege zum selben Ziel - leer anfangen oder die alte Mappe uebernehmen. */}
+      <div className="start-row">
+        <ExcelImport brickTypes={brickTypes} />
 
-      <ExcelImport brickTypes={brickTypes} />
+        <Card title="Neues Bauvorhaben">
+          <div className="grid grid-2">
+            <TextField
+              label="Bezeichnung"
+              value={name}
+              onChange={setName}
+              placeholder="z. B. Einfamilienhaus Huber"
+            />
+            <div className="field field-action">
+              <Button variant="primary" onClick={() => void add()} disabled={!name.trim()}>
+                Anlegen
+              </Button>
+            </div>
+          </div>
+        </Card>
+      </div>
 
       <Card title="Bauvorhaben">
         {projects.length === 0 ? (

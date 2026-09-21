@@ -84,7 +84,7 @@ export function ExcelImport({ brickTypes }: { brickTypes: BrickType[] }) {
       )}
 
       {result && (
-        <>
+        <div className="import-preview">
           <Warnings items={result.warnings} />
           <table className="table">
             <thead>
@@ -123,7 +123,7 @@ export function ExcelImport({ brickTypes }: { brickTypes: BrickType[] }) {
             </Button>
             <Button onClick={() => setResult(null)}>Verwerfen</Button>
           </div>
-        </>
+        </div>
       )}
     </Card>
   )
