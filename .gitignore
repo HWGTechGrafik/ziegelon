@@ -6,6 +6,13 @@ dist-ssr/
 .vite/
 coverage/
 *.tsbuildinfo
+
+# Ergebnisse der Windows-Fassung: ueber 100 MB, gehoeren nicht in die
+# Versionsverwaltung. Gebaut wird mit 'npm run build' und
+# 'dotnet publish -c Release windows'.
+windows/bin/
+windows/obj/
+release/
 *.log
 .env
 .env.*

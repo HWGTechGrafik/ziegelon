@@ -1,0 +1,75 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Ziegelon als Windows-Anwendung.
+
+    Das Fenster zeigt dieselbe App, die auch am Handy laeuft - eingebettet in
+    WebView2, dem Edge-Kern, der auf Windows 10 und 11 ohnehin vorhanden ist.
+    So gibt es nur eine Fassung der App und keine zweite, die
+    auseinanderlaufen koennte.
+
+    Die gebauten Dateien aus ../dist wandern in die exe hinein. Bauen also
+    immer in zwei Schritten:
+
+      npm run build
+      dotnet publish -c Release windows
+
+    Ergebnis ist eine einzelne exe ohne Installation und ohne vorausgesetzte
+    .NET-Laufzeit.
+  -->
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net9.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+
+    <AssemblyName>Ziegelon</AssemblyName>
+    <RootNamespace>Ziegelon.Windows</RootNamespace>
+    <Product>Ziegelon</Product>
+    <AssemblyTitle>Ziegelon</AssemblyTitle>
+    <Version>1.0.0</Version>
+    <ApplicationIcon>ziegelon.ico</ApplicationIcon>
+
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <SelfContained>true</SelfContained>
+    <PublishSingleFile>true</PublishSingleFile>
+    <!-- Trimmen ist fuer WinForms nicht unterstuetzt und fuehrt zu Fehlern,
+         die erst zur Laufzeit auffallen. -->
+    <PublishTrimmed>false</PublishTrimmed>
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+    <SatelliteResourceLanguages>de;en</SatelliteResourceLanguages>
+    <!-- Ohne das landen die XML-Dokumentationen der WebView2-Pakete neben
+         der exe. Gebraucht werden sie nur beim Entwickeln. -->
+    <AllowedReferenceRelatedFileExtensions>none</AllowedReferenceRelatedFileExtensions>
+    <DebugType>none</DebugType>
+  </PropertyGroup>
+
+  <!--
+    Das Paket bringt neben der WinForms- auch eine WPF-Fassung mit, die auf
+    eine andere WindowsBase-Version verweist. Daher beim Bauen die Warnung
+    MSB3277. Sie ist folgenlos: eine WinForms-Anwendung laedt die WPF-Fassung
+    nie. Die Warnung bleibt bewusst sichtbar, statt sie stummzuschalten.
+  -->
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2957.106" />
+  </ItemGroup>
+
+  <!-- Die gebaute App wandert Datei fuer Datei als Ressource in die exe.
+       Der logische Name behaelt den Unterordner, damit sich der Baum beim
+       Start wieder herstellen laesst. -->
+  <ItemGroup>
+    <AppDateien Include="..\dist\**\*.*" />
+    <EmbeddedResource Include="@(AppDateien)">
+      <LogicalName>app/%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <Target Name="AppVorhanden" BeforeTargets="BeforeBuild">
+    <Error Condition="!Exists('$(MSBuildProjectDirectory)\..\dist\index.html')"
+           Text="../dist fehlt. Zuerst 'npm run build' ausfuehren, dann erneut bauen." />
+  </Target>
+
+</Project>
