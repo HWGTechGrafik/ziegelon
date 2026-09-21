@@ -62,12 +62,19 @@ export function SectionCard({
 
   const brick = brickTypes.find((b) => b.id === section.brickTypeId)
 
+  // Die meisten Abschnitte heissen nach ihrer Staerke. Dann stuende die
+  // Zahl zweimal nebeneinander - einmal als Ueberschrift, einmal als
+  // Abzeichen. Das Abzeichen traegt nur, was die Ueberschrift nicht sagt.
+  const staerke = brick ? `${fmt(brick.wallThicknessCm)} cm` : null
+  const zeigtStaerke =
+    staerke !== null && (section.label ?? '').replace(/\s/g, '') !== staerke.replace(/\s/g, '')
+
   return (
     <Card
       title={
         <span className="section-title">
           {section.label || 'Wandabschnitt'}
-          {brick && <span className="badge">{fmt(brick.wallThicknessCm)} cm</span>}
+          {zeigtStaerke && <span className="badge">{staerke}</span>}
         </span>
       }
       actions={

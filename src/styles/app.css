@@ -18,6 +18,10 @@
   --accent: var(--ziegelon-orange);
   --accent-dark: var(--ziegelon-orange-dark);
   --on-accent: #ffffff;
+  /* Orange als Schrift auf der getoenten Flaeche --highlight. Hell und
+     dunkel brauchen verschiedene Abstufungen, sonst faellt der Kontrast
+     unter das Lesbare (geprueft: 4,53 hell, 4,89 dunkel). */
+  --accent-ink: var(--ziegelon-orange-dark);
   --danger: #b3261e;
   --danger-bg: #fdf1f0;
   --ok: #1f7a4d;
@@ -33,6 +37,9 @@
   --brand-symbol-display: none;
   --radius: 10px;
   --tap: 44px;
+  /* Ein Hauch Tiefe, damit sich weisse Karten vom hellen Grund abheben.
+     Im Dunkeln bringt ein Schatten nichts - dort traegt der Rahmen. */
+  --shadow-card: 0 1px 2px rgba(25, 34, 43, 0.06);
 
   color-scheme: light;
   font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
@@ -60,6 +67,7 @@
     --accent: #e8763f;
     --accent-dark: #d6622f;
     --on-accent: #16202a;
+    --accent-ink: #e8763f;
     --danger: #ff8f85;
     --danger-bg: #3a2523;
     --ok: #6cd39e;
@@ -71,6 +79,7 @@
     --logo-plate-pad: 10px;
     --brand-logo-display: none;
     --brand-symbol-display: block;
+    --shadow-card: none;
 
     color-scheme: dark;
   }
@@ -85,6 +94,7 @@
   --accent: #e8763f;
   --accent-dark: #d6622f;
   --on-accent: #16202a;
+  --accent-ink: #e8763f;
   --danger: #ff8f85;
   --danger-bg: #3a2523;
   --ok: #6cd39e;
@@ -96,12 +106,26 @@
   --logo-plate-pad: 10px;
   --brand-logo-display: none;
   --brand-symbol-display: block;
+  --shadow-card: none;
 
   color-scheme: dark;
 }
 
 * {
   box-sizing: border-box;
+}
+
+/*
+ * Sichtbarer Fokus fuer alles, was sich bedienen laesst.
+ *
+ * Bisher hatten nur die Eingabefelder einen Ring. Wer mit der Tastatur durch
+ * die Seite geht - am Windows-Rechner ohne Maus der uebliche Weg -, sah nicht,
+ * wo er gerade steht. Der Ring erscheint nur bei Tastaturbedienung, ein
+ * Mausklick loest ihn nicht aus.
+ */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
 
 html,
@@ -143,6 +167,7 @@ body {
 .brand {
   display: flex;
   align-items: center;
+  gap: 4px;
   text-decoration: none;
 }
 
@@ -159,10 +184,14 @@ body {
 }
 
 .brand-label {
+  transition:
+    background-color 120ms ease,
+    color 120ms ease;
   display: inline-flex;
   align-items: center;
   min-height: var(--tap);
-  margin-left: 6px;
+  /* Das Logo braucht Luft, sonst klebt das Wort daran. */
+  margin-left: 8px;
   padding: 0 14px;
   border-radius: var(--radius);
   color: var(--ink);
@@ -174,9 +203,14 @@ body {
   background: var(--bg);
 }
 
+/*
+ * Bewusst leiser als die Navigation rechts: der Schriftzug steht direkt neben
+ * dem Logo, und zwei kraeftige Orangeflaechen nebeneinander nehmen der Marke
+ * die Luft. Getoent reicht voellig, um zu zeigen, wo man steht.
+ */
 .brand-label.active {
-  background: var(--accent);
-  color: var(--on-accent);
+  background: var(--highlight);
+  color: var(--accent-ink);
 }
 
 /* Auf schmalen Geraeten nur das Symbol - der Schriftzug wuerde die
@@ -214,6 +248,9 @@ body {
 }
 
 .nav-link {
+  transition:
+    background-color 120ms ease,
+    color 120ms ease;
   display: inline-flex;
   align-items: center;
   min-height: var(--tap);
@@ -286,6 +323,7 @@ body {
   background: var(--surface);
   border: 1px solid var(--line);
   border-radius: var(--radius);
+  box-shadow: var(--shadow-card);
   padding: 16px;
   display: flex;
   flex-direction: column;
@@ -451,6 +489,11 @@ select.input {
 /* ---------- Schaltflaechen ---------- */
 
 .btn {
+  transition:
+    background-color 120ms ease,
+    border-color 120ms ease,
+    color 120ms ease,
+    transform 80ms ease;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -470,8 +513,22 @@ select.input {
   background: var(--bg);
 }
 
+/* Ein kurzer Druckpunkt - am Handy die einzige Rueckmeldung, dass der
+   Finger getroffen hat, solange die Rechnung noch laeuft. */
+.btn:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+/*
+ * Ein ausgegrauter Schalter muss lesbar bleiben - er sagt ja gerade, dass
+ * noch etwas fehlt. Mit halber Deckkraft verschwand die weisse Schrift auf
+ * dem orangen "Anlegen" fast vollstaendig. Deshalb neutral statt blass.
+ */
 .btn:disabled {
-  opacity: 0.45;
+  background: var(--bg);
+  border-color: var(--line);
+  color: var(--ink-muted);
+  box-shadow: none;
   cursor: not-allowed;
 }
 
@@ -745,6 +802,9 @@ td.done {
 }
 
 .project-open {
+  transition:
+    background-color 120ms ease,
+    border-color 120ms ease;
   flex: 1;
   min-height: 56px;
   padding: 10px 14px;
@@ -961,6 +1021,10 @@ td.done {
 }
 
 .choice {
+  transition:
+    background-color 120ms ease,
+    border-color 120ms ease,
+    color 120ms ease;
   display: flex;
   flex-direction: column;
   gap: 2px;
@@ -1055,8 +1119,17 @@ td.done {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .disclosure-mark {
+  .disclosure-mark,
+  .btn,
+  .brand-label,
+  .nav-link,
+  .choice,
+  .project-open {
     transition: none;
+  }
+
+  .btn:active:not(:disabled) {
+    transform: none;
   }
 }
 
