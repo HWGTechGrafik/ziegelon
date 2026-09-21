@@ -21,3 +21,8 @@ release/
 # Lizenzgenerator: enthaelt den privaten Schluessel und darf nie ins Repo.
 # Bleibt hier stehen, damit die Sperre auch in einem frischen Klon greift.
 privat/
+
+# Fertig geschnuerte Fassung zum Weitergeben: dieselbe exe wie unter release/
+# samt Anleitung und gepackt. Ueber 100 MB, gehoert nicht in die
+# Versionsverwaltung. Wird mit 'npm run auslieferung' neu gebaut.
+auslieferung/

@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "auslieferung": "npm run build && dotnet publish -c Release windows && node scripts/auslieferung.mjs",
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest"
