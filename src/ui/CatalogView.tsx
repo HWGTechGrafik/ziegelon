@@ -54,6 +54,13 @@ export function CatalogView({ brickTypes }: { brickTypes: BrickType[] }) {
         {brickTypes.length === 0 && <Empty>Noch kein Ziegeltyp angelegt.</Empty>}
       </Card>
 
+      {brickTypes.length > 0 && (
+        <div className="group-head">
+          <h3>Ziegeltypen</h3>
+          <span className="badge">{fmt(brickTypes.length)}</span>
+          <span className="group-rule" aria-hidden="true" />
+        </div>
+      )}
       {brickTypes.map((brick) => (
         <BrickTypeCard key={brick.id} brick={brick} />
       ))}
@@ -87,6 +94,10 @@ function BrickTypeCard({ brick }: { brick: BrickType }) {
 
   return (
     <Card
+      // Das Kopfband traegt nur der aufgeklappte Eintrag. Zugeklappt ist die
+      // Zeile ohnehin schon eine Zeile; aufgeklappt braucht sie ein Dach,
+      // sonst laufen die Zahlenfelder zweier Typen ineinander.
+      {...(open ? { className: 'card-section' } : {})}
       title={
         <button
           type="button"
