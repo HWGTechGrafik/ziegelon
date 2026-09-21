@@ -30,7 +30,17 @@
     <RootNamespace>Ziegelon.Windows</RootNamespace>
     <Product>Ziegelon</Product>
     <AssemblyTitle>Ziegelon</AssemblyTitle>
-    <Version>1.0.0</Version>
+    <!--
+      Die Nummer kommt aus ../package.json - dieselbe Quelle wie fuer die
+      Weboberflaeche. Sonst behaupten Fenstereigenschaften und Fusszeile
+      frueher oder spaeter verschiedene Fassungen; genau das war hier schon
+      der Fall (exe 1.0.0, package.json 0.1.0).
+
+      Gelesen wird beim Auswerten der Datei, nicht in einem Target: spaeter
+      waeren die Versionsattribute der Assembly schon erzeugt.
+    -->
+    <PaketJson>$([System.IO.File]::ReadAllText('$(MSBuildProjectDirectory)/../package.json'))</PaketJson>
+    <Version>$([System.Text.RegularExpressions.Regex]::Match($(PaketJson), '"version"\s*:\s*"([^"]+)"').Groups[1].Value)</Version>
     <ApplicationIcon>ziegelon.ico</ApplicationIcon>
 
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>

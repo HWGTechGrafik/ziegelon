@@ -1,6 +1,35 @@
+import { execSync } from 'node:child_process'
+import { readFileSync } from 'node:fs'
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
+
+/**
+ * Version der App.
+ *
+ * Eine einzige Quelle: die Nummer in package.json. Die Windows-exe liest
+ * dieselbe Datei beim Bauen, damit Fenster und App nicht verschiedene
+ * Nummern behaupten.
+ */
+const paket = JSON.parse(readFileSync('./package.json', 'utf8')) as { version: string }
+
+/**
+ * Commit und Baudatum kommen automatisch dazu.
+ *
+ * Damit laesst sich auch zwischen zwei Nummern sagen, welcher Stand auf
+ * einem Geraet liegt - bei einer Fehlermeldung von der Baustelle ist das die
+ * erste Frage. Ohne Git-Arbeitsverzeichnis bleibt der Commit leer, der Bau
+ * darf daran nicht scheitern.
+ */
+function commit(): string {
+  try {
+    return execSync('git rev-parse --short HEAD', { stdio: ['ignore', 'pipe', 'ignore'] })
+      .toString()
+      .trim()
+  } catch {
+    return ''
+  }
+}
 
 /**
  * Unterverzeichnis, unter dem die App ausgeliefert wird.
@@ -13,6 +42,11 @@ const base = process.env['BASE_PATH'] ?? '/'
 
 export default defineConfig({
   base,
+  define: {
+    __ZIEGELON_VERSION__: JSON.stringify(paket.version),
+    __ZIEGELON_COMMIT__: JSON.stringify(commit()),
+    __ZIEGELON_GEBAUT__: JSON.stringify(new Date().toISOString().slice(0, 10)),
+  },
   server: {
     // Nimmt den Port, den die Umgebung vorgibt. Ohne das sucht sich Vite bei
     // belegtem 5173 selbst einen und die Vorschau zeigt ins Leere.

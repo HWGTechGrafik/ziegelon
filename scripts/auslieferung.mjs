@@ -16,7 +16,15 @@
  * die man beim Bauen vergisst, veraltet still.
  */
 import { execFileSync } from 'node:child_process'
-import { copyFileSync, existsSync, mkdirSync, rmSync, statSync, writeFileSync } from 'node:fs'
+import {
+  copyFileSync,
+  existsSync,
+  mkdirSync,
+  readFileSync,
+  rmSync,
+  statSync,
+  writeFileSync,
+} from 'node:fs'
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -29,9 +37,15 @@ const ziel = join(wurzel, 'auslieferung')
 const ordner = join(ziel, 'Ziegelon')
 const zip = join(ziel, 'Ziegelon-Windows.zip')
 
+// Dieselbe Nummer, die auch in der Fusszeile der App und in den
+// Dateieigenschaften der exe steht.
+const version = JSON.parse(readFileSync(join(wurzel, 'package.json'), 'utf8')).version
+
 // Der Text fuer den Kunden. Umlaute ausgeschrieben - das liest ein Mensch.
 const ANLEITUNG = `Ziegelon für Windows
 =====================
+
+Version ${version}
 
 Ziegelon rechnet den Ziegel-, Laibungs-, Eckstein- und Überlegerbedarf eines
 Bauvorhabens und führt die Bestellung gegen das, was schon bestellt ist, und
@@ -141,5 +155,6 @@ execFileSync(
 )
 
 const mb = (pfad) => (statSync(pfad).size / 1024 / 1024).toFixed(1)
+console.log(`Version: ${version}`)
 console.log(`Ordner:  auslieferung/Ziegelon (${mb(join(ordner, 'Ziegelon.exe'))} MB)`)
 console.log(`Gepackt: auslieferung/Ziegelon-Windows.zip (${mb(zip)} MB)`)

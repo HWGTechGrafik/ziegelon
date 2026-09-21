@@ -10,6 +10,7 @@ import { BackupCard } from './BackupCard'
 import { ExcelImport } from './ExcelImport'
 import { Card } from './components'
 import { applyTheme } from './theme'
+import { versionLang } from '../version'
 
 const CHOICES: Array<{ value: Theme; label: string; hint: string }> = [
   { value: 'light', label: 'Hell', hint: 'Immer hell' },
@@ -87,6 +88,9 @@ export function SettingsView({
             <dd>{license.expiresOn ? formatDate(license.expiresOn) : 'unbefristet'}</dd>
           </div>
         </dl>
+        {/* Nummer, Baudatum und Commit - bei einer Rueckmeldung von der
+            Baustelle die erste Frage: welcher Stand liegt dort? */}
+        <p className="hint">Version {versionLang()}</p>
         {IS_DEVELOPMENT_KEY && (
           <p className="lock-dev">
             Entwicklungsschlüssel aktiv – vor der Auslieferung im Lizenzgenerator

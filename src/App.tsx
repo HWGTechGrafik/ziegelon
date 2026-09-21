@@ -15,6 +15,7 @@ import { LicenseLine, LockScreen } from './ui/LockScreen'
 import { ProjectListView } from './ui/ProjectListView'
 import { ProjectView } from './ui/ProjectView'
 import { hrefFor, navigate, useRoute } from './ui/router'
+import { VERSION_KURZ } from './version'
 
 export function App() {
   const settings = useSettings()
@@ -128,6 +129,7 @@ function Shell({ license, theme }: { license: LicenseInfo; theme: Theme }) {
 
       <footer className="app-foot no-print">
         <LicenseLine info={license} />
+        <p className="version-line">{VERSION_KURZ}</p>
       </footer>
     </div>
   )
