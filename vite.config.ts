@@ -3,9 +3,18 @@ import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 
 export default defineConfig({
-  // Nimmt den Port, den die Umgebung vorgibt. Ohne das sucht sich Vite bei
-  // belegtem 5173 selbst einen und die Vorschau zeigt ins Leere.
-  server: { port: Number(process.env['PORT']) || 5173 },
+  server: {
+    // Nimmt den Port, den die Umgebung vorgibt. Ohne das sucht sich Vite bei
+    // belegtem 5173 selbst einen und die Vorschau zeigt ins Leere.
+    port: Number(process.env['PORT']) || 5173,
+    watch: {
+      // privat/ enthaelt den Lizenzgenerator samt seiner Build-Artefakte.
+      // Die Dateiueberwachung lief dort in eine gesperrte Datei und riss den
+      // Entwicklungsserver mit (EBUSY). Mit der App hat der Ordner ohnehin
+      // nichts zu tun.
+      ignored: ['**/privat/**'],
+    },
+  },
   plugins: [
     react(),
     VitePWA({

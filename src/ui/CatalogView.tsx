@@ -6,9 +6,11 @@
  * pflegbarer Datensatz. Neue Wandstaerken oder ein Lieferantenwechsel
  * brauchen damit keine Codeaenderung mehr.
  */
+import { useState } from 'react'
 import { newId, now } from '../domain/factory'
 import type { BrickType } from '../domain/types'
 import { saveBrickType, deleteBrickType } from '../storage/repo'
+import { fmt } from './format'
 import { Button, Card, Empty, NumberField, TextField } from './components'
 
 export function CatalogView({ brickTypes }: { brickTypes: BrickType[] }) {
@@ -49,7 +51,17 @@ export function CatalogView({ brickTypes }: { brickTypes: BrickType[] }) {
   )
 }
 
+/**
+ * Ein Ziegeltyp, zugeklappt.
+ *
+ * Mit allen Feldern offen wird die Seite bei einem Dutzend Typen unuebersichtlich
+ * und man scrollt an dem vorbei, was man sucht. Die zugeklappte Zeile zeigt
+ * deshalb die Kennwerte, die man im Alltag vergleicht - Staerke, Ziegel je m2
+ * und je Palette.
+ */
 function BrickTypeCard({ brick }: { brick: BrickType }) {
+  const [open, setOpen] = useState(false)
+
   const patch = (changes: Partial<BrickType>) =>
     void saveBrickType({ ...brick, ...changes })
 
@@ -59,15 +71,40 @@ function BrickTypeCard({ brick }: { brick: BrickType }) {
     }
   }
 
+  const summary =
+    `${fmt(brick.wallThicknessCm)} cm · ${fmt(brick.bricksPerSqm)} Stk/m² · ` +
+    `${fmt(brick.bricksPerPallet)} Stk/Pal`
+
   return (
     <Card
-      title={brick.name}
+      title={
+        <button
+          type="button"
+          className="disclosure"
+          aria-expanded={open}
+          onClick={() => setOpen(!open)}
+        >
+          <span className={open ? 'disclosure-mark open' : 'disclosure-mark'} aria-hidden="true">
+            ›
+          </span>
+          <span className="disclosure-text">
+            <span className="disclosure-title">{brick.name}</span>
+            <span className="disclosure-summary">{summary}</span>
+          </span>
+        </button>
+      }
       actions={
-        <Button variant="danger" onClick={remove}>
-          Löschen
-        </Button>
+        open ? (
+          <Button variant="danger" onClick={remove}>
+            Löschen
+          </Button>
+        ) : (
+          <Button onClick={() => setOpen(true)}>Bearbeiten</Button>
+        )
       }
     >
+      {!open ? null : (
+      <>
       <div className="grid grid-2">
         <TextField
           label="Bezeichnung"
@@ -125,6 +162,8 @@ function BrickTypeCard({ brick }: { brick: BrickType }) {
           onChange={(cornerBricksPerPallet) => patch({ cornerBricksPerPallet })}
         />
       </div>
+      </>
+      )}
     </Card>
   )
 }
