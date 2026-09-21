@@ -10,14 +10,24 @@ const nf = (min: number, max: number) =>
 const decimal = nf(0, 2)
 const exact = nf(0, 0)
 
+/**
+ * Negative Null zu gewoehnlicher Null.
+ *
+ * Intl formatiert -0 als "-0". Aus einer Differenz, die genau aufgeht, wird
+ * so ein "-0 m2" - das sieht nach einem Rechenfehler aus, wo keiner ist.
+ */
+const ohneMinusNull = (value: number): number => value + 0
+
 /** Fuer Mengen mit Nachkommastellen, z. B. Flaechen. */
-export const fmt = (value: number): string => decimal.format(value)
+export const fmt = (value: number): string => decimal.format(ohneMinusNull(value))
 
 /** Fuer Stueckzahlen und Paletten. */
-export const fmtInt = (value: number): string => exact.format(Math.round(value))
+export const fmtInt = (value: number): string =>
+  exact.format(ohneMinusNull(Math.round(value)))
 
 /** Laengen in m mit zwei Nachkommastellen, z. B. "2,75 m". */
-export const fmtM = (value: number): string => `${nf(2, 2).format(value)} m`
+export const fmtM = (value: number): string =>
+  `${nf(2, 2).format(ohneMinusNull(value))} m`
 
 /**
  * Liest eine Zahl aus einer Eingabe. Akzeptiert Komma und Punkt.

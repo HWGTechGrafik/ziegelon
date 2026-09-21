@@ -16,9 +16,16 @@ export function ceilTo(value: number, step: number): number {
   return roundTo(steps * step, 6)
 }
 
-/** Aufrunden auf ganze Stueck - fuer Paletten und Ziegelzahlen. */
+/**
+ * Aufrunden auf ganze Stueck - fuer Paletten und Ziegelzahlen.
+ *
+ * Das `+ 0` ist kein Zierrat: `Math.ceil(0 - EPS)` liefert **negative Null**.
+ * Rechnerisch ist die gleich 0, angezeigt wird daraus aber "-0 Paletten", und
+ * in einer Sicherung stuende dasselbe. Die Addition macht daraus eine
+ * gewoehnliche Null.
+ */
 export function ceilUnits(value: number): number {
-  return Math.ceil(value - EPS)
+  return Math.ceil(value - EPS) + 0
 }
 
 /** Kaufmaennisch auf `digits` Nachkommastellen runden (nur fuer die Anzeige). */

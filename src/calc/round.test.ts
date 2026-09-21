@@ -39,4 +39,11 @@ describe('ceilUnits', () => {
     expect(ceilUnits(9)).toBe(9)
     expect(ceilUnits(0.1 + 0.2 + 8.7)).toBe(9)
   })
+
+  it('gibt bei 0 eine gewoehnliche Null zurueck, keine negative', () => {
+    // Math.ceil(0 - EPS) liefert -0. Rechnerisch egal, angezeigt aber
+    // "-0 Paletten" - und so stuende es auch in einer Sicherung.
+    expect(Object.is(ceilUnits(0), -0)).toBe(false)
+    expect(ceilUnits(0)).toBe(0)
+  })
 })
