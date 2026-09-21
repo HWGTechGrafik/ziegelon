@@ -18,11 +18,16 @@ export default defineConfig({
     // belegtem 5173 selbst einen und die Vorschau zeigt ins Leere.
     port: Number(process.env['PORT']) || 5173,
     watch: {
-      // privat/ enthaelt den Lizenzgenerator samt seiner Build-Artefakte.
-      // Die Dateiueberwachung lief dort in eine gesperrte Datei und riss den
-      // Entwicklungsserver mit (EBUSY). Mit der App hat der Ordner ohnehin
-      // nichts zu tun.
-      ignored: ['**/privat/**'],
+      // Ordner mit fertigen Binaerdateien: die Dateiueberwachung laeuft dort
+      // in eine gesperrte Datei und reisst den Entwicklungsserver mit
+      // (EBUSY) - passiert beim Schnueren der Windows-Fassung zuverlaessig,
+      // weil die exe ueber 100 MB gross ist und gerade geschrieben wird.
+      // Mit der Weboberflaeche haben die Ordner ohnehin nichts zu tun.
+      //
+      // privat/       Lizenzgenerator samt Build-Artefakten
+      // release/      die gebaute Windows-exe
+      // auslieferung/ dieselbe exe, geschnuert zum Weitergeben
+      ignored: ['**/privat/**', '**/release/**', '**/auslieferung/**'],
     },
   },
   plugins: [
