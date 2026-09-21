@@ -1,0 +1,774 @@
+/**
+ * Oberflaeche von Ziegelon.
+ *
+ * Bewusst hell gehalten: das Volllogo traegt den Schriftzug in Markendunkel
+ * und verschwaende auf dunklem Grund. Auf der Baustelle ist Hell bei
+ * Sonnenlicht ausserdem besser lesbar.
+ *
+ * Bedienelemente sind mindestens 44 px hoch - das ist die Groesse, die sich
+ * mit Arbeitshandschuhen noch treffen laesst.
+ */
+
+:root {
+  --bg: #f4f2ef;
+  --surface: #ffffff;
+  --ink: var(--ziegelon-dark);
+  --ink-muted: #5c6672;
+  --line: #ddd8d2;
+  --accent: var(--ziegelon-orange);
+  --accent-dark: var(--ziegelon-orange-dark);
+  --danger: #b3261e;
+  --ok: #1f7a4d;
+  --radius: 10px;
+  --tap: 44px;
+
+  color-scheme: light;
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  color: var(--ink);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+}
+
+body {
+  -webkit-text-size-adjust: 100%;
+}
+
+.app {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---------- Kopfzeile ---------- */
+
+.app-head {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 16px;
+  padding-top: max(10px, env(safe-area-inset-top));
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+.brand-logo {
+  display: block;
+  height: 40px;
+  width: auto;
+}
+
+/* Auf schmalen Geraeten nur das Symbol - der Schriftzug wuerde die
+   Navigation verdraengen. */
+.brand-symbol {
+  display: none;
+  height: 36px;
+  width: auto;
+}
+
+@media (max-width: 480px) {
+  .brand-logo {
+    display: none;
+  }
+  .brand-symbol {
+    display: block;
+  }
+}
+
+.app-nav {
+  display: flex;
+  gap: 4px;
+}
+
+.nav-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap);
+  padding: 0 14px;
+  border-radius: var(--radius);
+  color: var(--ink);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.nav-link:hover {
+  background: var(--bg);
+}
+
+.nav-link.active {
+  background: var(--accent);
+  color: #fff;
+}
+
+.app-main {
+  flex: 1;
+  width: 100%;
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 16px;
+  padding-bottom: max(24px, env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ---------- Karten ---------- */
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.card-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.card-head h2 {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.3;
+}
+
+.card-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.badge {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 2px 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-muted);
+}
+
+h3.sub {
+  margin: 8px 0 0;
+  font-size: 15px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--ink-muted);
+}
+
+h4 {
+  margin: 0 0 8px;
+  font-size: 15px;
+}
+
+/* ---------- Formularfelder ---------- */
+
+.grid {
+  display: grid;
+  gap: 12px;
+}
+
+.grid-2 {
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
+.grid-3 {
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.field label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-muted);
+}
+
+.field-action {
+  justify-content: flex-end;
+}
+
+.input {
+  width: 100%;
+  min-height: var(--tap);
+  padding: 0 12px;
+  font-size: 16px; /* unter 16px zoomt iOS beim Fokus hinein */
+  font-family: inherit;
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+
+.input:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+  border-color: var(--accent);
+}
+
+select.input {
+  appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, var(--ink-muted) 50%),
+    linear-gradient(135deg, var(--ink-muted) 50%, transparent 50%);
+  background-position: calc(100% - 18px) 50%, calc(100% - 12px) 50%;
+  background-size: 6px 6px;
+  background-repeat: no-repeat;
+  padding-right: 34px;
+}
+
+.input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.suffix {
+  position: absolute;
+  right: 12px;
+  font-size: 13px;
+  color: var(--ink-muted);
+  pointer-events: none;
+}
+
+.input-wrap .input {
+  padding-right: 46px;
+}
+
+.hint {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--ink-muted);
+}
+
+.toggle label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: var(--tap);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.toggle input {
+  width: 22px;
+  height: 22px;
+  accent-color: var(--accent);
+}
+
+/* ---------- Schaltflaechen ---------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--tap);
+  padding: 0 16px;
+  font-size: 15px;
+  font-family: inherit;
+  font-weight: 600;
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.btn:hover:not(:disabled) {
+  background: var(--bg);
+}
+
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: var(--accent-dark);
+  border-color: var(--accent-dark);
+}
+
+.btn-danger {
+  color: var(--danger);
+  border-color: var(--line);
+}
+
+.btn-danger:hover:not(:disabled) {
+  background: #fdf1f0;
+  border-color: var(--danger);
+}
+
+.btn-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* ---------- Zeilen ---------- */
+
+.rows {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.row {
+  display: grid;
+  gap: 10px;
+  align-items: end;
+  padding: 10px;
+  background: var(--bg);
+  border-radius: var(--radius);
+}
+
+.row .btn-danger {
+  background: var(--surface);
+  min-width: var(--tap);
+  padding: 0;
+  font-size: 20px;
+  line-height: 1;
+}
+
+.row-run {
+  grid-template-columns: 1fr 1fr auto;
+}
+
+.row-opening {
+  grid-template-columns: repeat(4, 1fr) auto;
+}
+
+@media (max-width: 620px) {
+  .row-opening {
+    grid-template-columns: 1fr 1fr auto;
+  }
+}
+
+/* ---------- Ergebnis ---------- */
+
+.result {
+  border-top: 1px solid var(--line);
+  padding-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 10px;
+  margin: 0;
+}
+
+.stat {
+  background: var(--bg);
+  border-radius: var(--radius);
+  padding: 10px 12px;
+}
+
+.stat dt {
+  font-size: 13px;
+  color: var(--ink-muted);
+}
+
+.stat dd {
+  margin: 2px 0 0;
+  font-size: 17px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.stat-strong {
+  background: #fdf1ea;
+  box-shadow: inset 3px 0 0 var(--accent);
+}
+
+.stat-note {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink-muted);
+}
+
+.stats-top {
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+}
+
+/* ---------- Tabellen ---------- */
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+}
+
+.table th,
+.table td {
+  padding: 10px 8px;
+  text-align: left;
+  border-bottom: 1px solid var(--line);
+}
+
+.table th {
+  font-size: 13px;
+  color: var(--ink-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.table .num {
+  text-align: right;
+}
+
+.table .strong {
+  font-weight: 700;
+}
+
+.table-demand tbody tr:not(.detail-row) {
+  cursor: pointer;
+}
+
+.table-demand tbody tr:not(.detail-row):hover {
+  background: var(--bg);
+}
+
+.row-open {
+  background: var(--bg);
+}
+
+.link-like {
+  font-weight: 600;
+}
+
+.unit {
+  display: block;
+  font-size: 12px;
+  color: var(--ink-muted);
+}
+
+td.open {
+  color: var(--danger);
+  font-weight: 700;
+}
+
+td.done {
+  color: var(--ok);
+}
+
+.detail {
+  padding: 4px 0 12px;
+}
+
+.detail-cols {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+}
+
+@media (max-width: 720px) {
+  .detail-cols {
+    grid-template-columns: 1fr;
+  }
+}
+
+.bookings {
+  list-style: none;
+  margin: 0 0 12px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.bookings li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 10px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+
+.bookings .qty {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.bookings .date,
+.bookings .note {
+  font-size: 13px;
+  color: var(--ink-muted);
+}
+
+.bookings .btn-danger {
+  margin-left: auto;
+  min-width: 36px;
+  min-height: 36px;
+  padding: 0;
+}
+
+/* ---------- Bauvorhabenliste ---------- */
+
+.project-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.project-list li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.project-open {
+  flex: 1;
+  min-height: 56px;
+  padding: 10px 14px;
+  text-align: left;
+  font-family: inherit;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  cursor: pointer;
+}
+
+.project-open:hover {
+  border-color: var(--accent);
+}
+
+.project-name {
+  display: block;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.project-meta {
+  display: block;
+  font-size: 13px;
+  color: var(--ink-muted);
+}
+
+/* ---------- Reiter ---------- */
+
+.tabs {
+  display: flex;
+  gap: 4px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 4px;
+}
+
+.tab {
+  flex: 1;
+  min-height: var(--tap);
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink-muted);
+  background: transparent;
+  border: 0;
+  border-radius: 7px;
+  cursor: pointer;
+}
+
+.tab.active {
+  background: var(--accent);
+  color: #fff;
+}
+
+/* ---------- Hinweise ---------- */
+
+.warnings {
+  margin: 0;
+  padding: 10px 12px 10px 30px;
+  background: #fdf6e7;
+  border: 1px solid #e8d49a;
+  border-radius: var(--radius);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.empty {
+  margin: 0;
+  padding: 14px;
+  color: var(--ink-muted);
+  font-size: 15px;
+  text-align: center;
+}
+
+/* ---------- Druck ---------- */
+
+@media print {
+  .no-print,
+  .app-head,
+  .card-actions {
+    display: none !important;
+  }
+
+  body {
+    background: #fff;
+  }
+
+  .app-main {
+    padding: 0;
+    max-width: none;
+  }
+
+  .card {
+    border: 0;
+    padding: 0;
+  }
+
+  .table th,
+  .table td {
+    padding: 6px 4px;
+    font-size: 12px;
+  }
+}
+
+/* ---------- Sperrbildschirm ---------- */
+
+.lock {
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: var(--bg);
+}
+
+.lock-box {
+  width: 100%;
+  max-width: 440px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 24px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+
+.lock-logo {
+  display: block;
+  height: 72px;
+  width: auto;
+  margin: 0 auto 4px;
+}
+
+.lead {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--ink-muted);
+  text-align: center;
+}
+
+.lock-box .field span {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-muted);
+}
+
+.textarea {
+  min-height: 92px;
+  padding: 10px 12px;
+  line-height: 1.5;
+  font-family: ui-monospace, 'Cascadia Mono', Consolas, monospace;
+  font-size: 14px;
+  resize: vertical;
+  word-break: break-all;
+}
+
+.textarea.wrong {
+  border-color: var(--danger);
+}
+
+.lock-error {
+  margin: 0;
+  padding: 10px 12px;
+  background: #fdf1f0;
+  border: 1px solid var(--danger);
+  border-radius: var(--radius);
+  color: var(--danger);
+  font-size: 14px;
+}
+
+.lock-main {
+  flex: 1;
+}
+
+.lock-dev {
+  margin: 0;
+  padding: 10px 12px;
+  background: #fdf6e7;
+  border: 1px solid #e8d49a;
+  border-radius: var(--radius);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+/* ---------- Fusszeile ---------- */
+
+.app-foot {
+  padding: 12px 16px;
+  padding-bottom: max(12px, env(safe-area-inset-bottom));
+  border-top: 1px solid var(--line);
+}
+
+.license-line {
+  margin: 0;
+  text-align: center;
+  font-size: 12px;
+  color: var(--ink-muted);
+}

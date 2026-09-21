@@ -1,0 +1,16 @@
+node_modules/
+dist/
+dist-ssr/
+*.local
+.DS_Store
+.vite/
+coverage/
+*.tsbuildinfo
+*.log
+.env
+.env.*
+!.env.example
+
+# Lizenzgenerator: enthaelt den privaten Schluessel und darf nie ins Repo.
+# Bleibt hier stehen, damit die Sperre auch in einem frischen Klon greift.
+privat/

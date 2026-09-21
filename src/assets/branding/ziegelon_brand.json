@@ -1,0 +1,40 @@
+{
+  "name": "Ziegelon",
+  "purpose": "Ziegelberechnung / Ziegel- und Mauerwerksberechnung",
+  "source_image": {
+    "filename": "Ziegelon_logo_original.png",
+    "dimensions_px": [
+      636,
+      579
+    ],
+    "note": "Original user-supplied artwork. Treat as the visual source of truth."
+  },
+  "visual_identity": {
+    "primary_dark": "#19222B",
+    "primary_orange": "#D6622F",
+    "secondary_orange": "#B84F21",
+    "white": "#FFFFFF",
+    "style": "modern, technical, construction-focused, clean, bold"
+  },
+  "logo_structure": {
+    "symbol": "stylized orange brick wall combined with a dark calculator",
+    "wordmark": "Ziegelon",
+    "wordmark_color_split": "Ziegel = dark, on = orange",
+    "tagline": null
+  },
+  "implementation_rules": [
+    "Do not redraw or alter the supplied logo unless explicitly requested.",
+    "Do not add shadows, outlines, gradients, bevels, extra bricks, or extra calculator keys.",
+    "Keep the brick/calculator proportions and relative placement unchanged.",
+    "Use the original PNG when exact visual fidelity is required.",
+    "For a true vector master, have the supplied artwork manually redrawn in Figma/Illustrator; do not auto-trace the raster and assume it is production-perfect.",
+    "Do not use JPG for logo assets.",
+    "Keep the logo visually clear at small sizes; use the symbol-only version for app launcher icons."
+  ],
+  "recommended_assets": {
+    "full_logo": "Ziegelon_logo_original.png",
+    "full_logo_2x": "Ziegelon_logo_2x.png",
+    "symbol": "Ziegelon_symbol_original.png",
+    "app_icon_source": "Ziegelon_symbol_1024.png"
+  }
+}

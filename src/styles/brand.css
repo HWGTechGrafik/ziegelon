@@ -1,0 +1,30 @@
+/**
+ * Ziegelon - Markentokens.
+ * Werte aus src/assets/branding/ziegelon_brand.json. Nicht frei aendern:
+ * das Logo ist darauf abgestimmt.
+ */
+:root {
+  --ziegelon-dark: #19222b;
+  --ziegelon-orange: #d6622f;
+  --ziegelon-orange-dark: #b84f21;
+  --ziegelon-white: #ffffff;
+}
+
+/**
+ * Das gelieferte Volllogo traegt den Schriftzug "Ziegel" in Markendunkel.
+ * Auf dunklem Grund verschwindet er. Deshalb gilt: Volllogo nur auf hellen
+ * Flaechen, im Dunklen das Symbol allein.
+ */
+.ziegelon-logo {
+  display: block;
+  width: auto;
+  height: 48px;
+  object-fit: contain;
+}
+
+.ziegelon-symbol {
+  display: block;
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+}
