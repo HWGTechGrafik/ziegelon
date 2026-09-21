@@ -5,9 +5,12 @@ import { useEffect, useState } from 'react'
 import logo from './assets/branding/derived/Ziegelon_logo.png'
 import symbol from './assets/branding/derived/Ziegelon_symbol.png'
 import { verifyLicense, type LicenseInfo } from './lib/license'
+import { DEFAULT_THEME, type Theme } from './domain/types'
 import { seedCatalogIfEmpty } from './storage/repo'
 import { useBrickTypes, useProject, useProjects, useSettings } from './storage/hooks'
 import { CatalogView } from './ui/CatalogView'
+import { SettingsView } from './ui/SettingsView'
+import { applyTheme } from './ui/theme'
 import { LicenseLine, LockScreen } from './ui/LockScreen'
 import { ProjectListView } from './ui/ProjectListView'
 import { ProjectView } from './ui/ProjectView'
@@ -40,13 +43,20 @@ export function App() {
     }
   }, [settings])
 
+  // Die gespeicherte Wahl gewinnt ueber den Zwischenspeicher, sobald sie da
+  // ist - etwa nach dem Einspielen einer Sicherung auf einem anderen Geraet.
+  const theme = settings?.theme
+  useEffect(() => {
+    if (theme) applyTheme(theme)
+  }, [theme])
+
   if (!licenseChecked) return <p className="empty">Wird geladen …</p>
   if (!license) return <LockScreen onUnlocked={setLicense} />
 
-  return <Shell license={license} />
+  return <Shell license={license} theme={theme ?? DEFAULT_THEME} />
 }
 
-function Shell({ license }: { license: LicenseInfo }) {
+function Shell({ license, theme }: { license: LicenseInfo; theme: Theme }) {
   const route = useRoute()
   const projects = useProjects()
   const brickTypes = useBrickTypes()
@@ -81,6 +91,12 @@ function Shell({ license }: { license: LicenseInfo }) {
           >
             Katalog
           </a>
+          <a
+            className={route.view === 'settings' ? 'nav-link active' : 'nav-link'}
+            href={hrefFor({ view: 'settings' })}
+          >
+            Einstellungen
+          </a>
         </nav>
       </header>
 
@@ -89,6 +105,8 @@ function Shell({ license }: { license: LicenseInfo }) {
           <p className="empty">Wird geladen …</p>
         ) : route.view === 'catalog' ? (
           <CatalogView brickTypes={brickTypes} />
+        ) : route.view === 'settings' ? (
+          <SettingsView theme={theme} license={license} />
         ) : route.view === 'project' ? (
           answersRoute && lookup?.project ? (
             <ProjectView project={lookup.project} brickTypes={brickTypes} />

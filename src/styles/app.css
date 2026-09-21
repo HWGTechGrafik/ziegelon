@@ -17,14 +17,87 @@
   --line: #ddd8d2;
   --accent: var(--ziegelon-orange);
   --accent-dark: var(--ziegelon-orange-dark);
+  --on-accent: #ffffff;
   --danger: #b3261e;
+  --danger-bg: #fdf1f0;
   --ok: #1f7a4d;
+  --ok-bg: #eef7f1;
+  --warn-bg: #fdf6e7;
+  --warn-line: #e8d49a;
+  --highlight: #fdf1ea;
+  /* Flaeche, auf der das Volllogo liegen darf. Im Dunkelmodus hell, weil der
+     Schriftzug "Ziegel" markendunkel ist und sonst verschwindet. */
+  --logo-plate: transparent;
+  --logo-plate-pad: 0px;
+  --brand-logo-display: block;
+  --brand-symbol-display: none;
   --radius: 10px;
   --tap: 44px;
 
   color-scheme: light;
   font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   color: var(--ink);
+}
+
+/**
+ * Dunkle Tokens.
+ *
+ * Die Flaechen sind bewusst **heller als das Markendunkel** #19222B. Sonst
+ * verschwaende der dunkle Taschenrechner im Logo auf gleich dunklem Grund;
+ * so hebt er sich als dunkle Form ab und die orangen Ziegel leuchten.
+ *
+ * Der Schriftzug laesst sich damit trotzdem nicht retten - Umfaerben verbietet
+ * die Markenvorgabe. Deshalb zeigt die Kopfzeile im Dunkeln nur das Symbol,
+ * und das Volllogo bekommt dort eine helle Flaeche unter sich.
+ */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --bg: #1c242d;
+    --surface: #242e39;
+    --ink: #eef1f4;
+    --ink-muted: #a3aeba;
+    --line: #36424f;
+    --accent: #e8763f;
+    --accent-dark: #d6622f;
+    --on-accent: #16202a;
+    --danger: #ff8f85;
+    --danger-bg: #3a2523;
+    --ok: #6cd39e;
+    --ok-bg: #1e3329;
+    --warn-bg: #332c1c;
+    --warn-line: #6b5a35;
+    --highlight: #33271f;
+    --logo-plate: #ffffff;
+    --logo-plate-pad: 10px;
+    --brand-logo-display: none;
+    --brand-symbol-display: block;
+
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme='dark'] {
+  --bg: #1c242d;
+  --surface: #242e39;
+  --ink: #eef1f4;
+  --ink-muted: #a3aeba;
+  --line: #36424f;
+  --accent: #e8763f;
+  --accent-dark: #d6622f;
+  --on-accent: #16202a;
+  --danger: #ff8f85;
+  --danger-bg: #3a2523;
+  --ok: #6cd39e;
+  --ok-bg: #1e3329;
+  --warn-bg: #332c1c;
+  --warn-line: #6b5a35;
+  --highlight: #33271f;
+  --logo-plate: #ffffff;
+  --logo-plate-pad: 10px;
+  --brand-logo-display: none;
+  --brand-symbol-display: block;
+
+  color-scheme: dark;
 }
 
 * {
@@ -71,19 +144,19 @@ body {
 }
 
 .brand-logo {
-  display: block;
+  display: var(--brand-logo-display);
   height: 40px;
+  width: auto;
+}
+
+.brand-symbol {
+  display: var(--brand-symbol-display);
+  height: 36px;
   width: auto;
 }
 
 /* Auf schmalen Geraeten nur das Symbol - der Schriftzug wuerde die
    Navigation verdraengen. */
-.brand-symbol {
-  display: none;
-  height: 36px;
-  width: auto;
-}
-
 @media (max-width: 480px) {
   .brand-logo {
     display: none;
@@ -115,7 +188,7 @@ body {
 
 .nav-link.active {
   background: var(--accent);
-  color: #fff;
+  color: var(--on-accent);
 }
 
 .app-main {
@@ -324,7 +397,7 @@ select.input {
 .btn-primary {
   background: var(--accent);
   border-color: var(--accent);
-  color: #fff;
+  color: var(--on-accent);
 }
 
 .btn-primary:hover:not(:disabled) {
@@ -338,7 +411,7 @@ select.input {
 }
 
 .btn-danger:hover:not(:disabled) {
-  background: #fdf1f0;
+  background: var(--danger-bg);
   border-color: var(--danger);
 }
 
@@ -381,9 +454,30 @@ select.input {
   grid-template-columns: repeat(4, 1fr) auto;
 }
 
+/**
+ * Auf schmalen Geraeten umbrechen.
+ *
+ * Mit drei Spalten landete die Hoehe in der auto-Spalte fuer den
+ * Loeschknopf und quetschte die Auswahl daneben auf null Breite. Deshalb
+ * zwei gleiche Spalten und feste Plaetze:
+ *
+ *   [ Art            ]
+ *   [ Breite ][ Hoehe ]
+ *   [ Anzahl ][   x   ]
+ */
 @media (max-width: 620px) {
   .row-opening {
-    grid-template-columns: 1fr 1fr auto;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .row-opening > :first-child {
+    grid-column: 1 / -1;
+  }
+
+  .row-opening > .btn-danger {
+    justify-self: end;
+    width: 100%;
+    max-width: 96px;
   }
 }
 
@@ -423,7 +517,7 @@ select.input {
 }
 
 .stat-strong {
-  background: #fdf1ea;
+  background: var(--highlight);
   box-shadow: inset 3px 0 0 var(--accent);
 }
 
@@ -623,7 +717,7 @@ td.done {
 
 .tab.active {
   background: var(--accent);
-  color: #fff;
+  color: var(--on-accent);
 }
 
 /* ---------- Hinweise ---------- */
@@ -631,8 +725,8 @@ td.done {
 .warnings {
   margin: 0;
   padding: 10px 12px 10px 30px;
-  background: #fdf6e7;
-  border: 1px solid #e8d49a;
+  background: var(--warn-bg);
+  border: 1px solid var(--warn-line);
   border-radius: var(--radius);
   font-size: 14px;
   line-height: 1.5;
@@ -704,6 +798,10 @@ td.done {
   height: 72px;
   width: auto;
   margin: 0 auto 4px;
+  padding: var(--logo-plate-pad);
+  background: var(--logo-plate);
+  border-radius: var(--radius);
+  box-sizing: content-box;
 }
 
 .lead {
@@ -737,7 +835,7 @@ td.done {
 .lock-error {
   margin: 0;
   padding: 10px 12px;
-  background: #fdf1f0;
+  background: var(--danger-bg);
   border: 1px solid var(--danger);
   border-radius: var(--radius);
   color: var(--danger);
@@ -751,8 +849,8 @@ td.done {
 .lock-dev {
   margin: 0;
   padding: 10px 12px;
-  background: #fdf6e7;
-  border: 1px solid #e8d49a;
+  background: var(--warn-bg);
+  border: 1px solid var(--warn-line);
   border-radius: var(--radius);
   font-size: 13px;
   line-height: 1.45;
@@ -771,4 +869,77 @@ td.done {
   text-align: center;
   font-size: 12px;
   color: var(--ink-muted);
+}
+
+/* ---------- Auswahl (Darstellung) ---------- */
+
+.choices {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 8px;
+}
+
+.choice {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-height: 60px;
+  padding: 10px 14px;
+  font-family: inherit;
+  text-align: left;
+  background: var(--surface);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  cursor: pointer;
+}
+
+.choice:hover {
+  border-color: var(--accent);
+}
+
+.choice.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--on-accent);
+}
+
+.choice-label {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.choice-hint {
+  font-size: 13px;
+  opacity: 0.8;
+}
+
+/**
+ * Bedarfstabelle auf schmalen Geraeten.
+ *
+ * Fuenf Spalten auf 375 px gehen nur mit knapperen Abstaenden. Verborgen
+ * wird nichts: beim Bestellen will man Bedarf, Bestelltes, Rest und Offenes
+ * nebeneinander sehen, sonst rechnet man im Kopf nach.
+ */
+@media (max-width: 480px) {
+  .table-demand th,
+  .table-demand td {
+    padding: 10px 3px;
+    font-size: 14px;
+  }
+
+  .table-demand th {
+    font-size: 10px;
+    letter-spacing: 0;
+  }
+
+  /* Die Bezeichnung darf umbrechen, die Zahlen nicht. */
+  .table-demand td.num,
+  .table-demand th.num {
+    white-space: nowrap;
+  }
+
+  .table-demand .unit {
+    font-size: 11px;
+  }
 }

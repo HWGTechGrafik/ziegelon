@@ -124,7 +124,14 @@ export interface StockEntry extends Syncable {
 export interface Settings extends Syncable {
   id: 'app'
   license?: string
+  /** Fehlt der Wert, gilt 'system'. */
+  theme?: Theme
 }
+
+/** 'system' folgt der Einstellung des Betriebssystems. */
+export type Theme = 'light' | 'dark' | 'system'
+
+export const DEFAULT_THEME: Theme = 'system'
 
 export interface Project extends Syncable {
   name: string

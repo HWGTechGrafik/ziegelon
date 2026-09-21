@@ -9,7 +9,7 @@
  */
 import { CATALOG_SEED } from '../domain/catalog'
 import { newId, now } from '../domain/factory'
-import type { BrickType, Project, Settings } from '../domain/types'
+import type { BrickType, Project, Settings, Theme } from '../domain/types'
 import { db } from './db'
 
 const touch = <T extends { updatedAt: string }>(entity: T): T => ({
@@ -17,14 +17,23 @@ const touch = <T extends { updatedAt: string }>(entity: T): T => ({
   updatedAt: now(),
 })
 
-/** Merkt den Lizenzschluessel, damit die App nur einmal danach fragt. */
-export async function saveLicense(license: string): Promise<void> {
-  const entry: Settings = { id: 'app', updatedAt: now(), license }
-  await db.settings.put(entry)
+/**
+ * Einstellungen zusammenfuehren statt ersetzen. Wuerde hier put mit einem
+ * frischen Objekt stehen, loeschte das Speichern des Themas die Lizenz.
+ */
+async function patchSettings(changes: Partial<Settings>): Promise<void> {
+  const current = await db.settings.get('app')
+  const next: Settings = { ...current, ...changes, id: 'app', updatedAt: now() }
+  await db.settings.put(next)
 }
 
-export async function clearLicense(): Promise<void> {
-  await db.settings.put({ id: 'app', updatedAt: now() })
+/** Merkt den Lizenzschluessel, damit die App nur einmal danach fragt. */
+export async function saveLicense(license: string): Promise<void> {
+  await patchSettings({ license })
+}
+
+export async function saveTheme(theme: Theme): Promise<void> {
+  await patchSettings({ theme })
 }
 
 export async function saveProject(project: Project): Promise<void> {

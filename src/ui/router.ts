@@ -11,10 +11,12 @@ export type Route =
   | { view: 'projects' }
   | { view: 'project'; id: string }
   | { view: 'catalog' }
+  | { view: 'settings' }
 
 export function parseHash(hash: string): Route {
   const parts = hash.replace(/^#\/?/, '').split('/').filter(Boolean)
   if (parts[0] === 'katalog') return { view: 'catalog' }
+  if (parts[0] === 'einstellungen') return { view: 'settings' }
   if (parts[0] === 'projekt' && parts[1]) return { view: 'project', id: parts[1] }
   return { view: 'projects' }
 }
@@ -23,6 +25,8 @@ export function hrefFor(route: Route): string {
   switch (route.view) {
     case 'catalog':
       return '#/katalog'
+    case 'settings':
+      return '#/einstellungen'
     case 'project':
       return `#/projekt/${route.id}`
     default:
