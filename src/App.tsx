@@ -83,6 +83,14 @@ function Shell({ license, theme }: { license: LicenseInfo; theme: Theme }) {
           {/* Volllogo nur auf heller Flaeche - der Schriftzug ist markendunkel. */}
           <img className="brand-logo" src={logo} alt="Ziegelon" />
           <img className="brand-symbol" src={symbol} alt="Ziegelon" />
+          {/*
+            Beschriftet, weil ein Logo allein nicht verraet, dass es der Weg
+            zurueck zur Uebersicht ist. Traegt dieselbe Hervorhebung wie die
+            Navigation daneben, damit erkennbar ist, wo man gerade steht.
+          */}
+          <span className={route.view === 'projects' ? 'brand-label active' : 'brand-label'}>
+            Dashboard
+          </span>
         </a>
         <nav className="app-nav">
           <a

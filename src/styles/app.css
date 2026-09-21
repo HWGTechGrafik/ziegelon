@@ -130,6 +130,9 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  /* Auf sehr schmalen Geraeten rutscht die Navigation lieber in eine zweite
+     Zeile, als dass "Einstellungen" am Rand abgeschnitten wird. */
+  flex-wrap: wrap;
   gap: 12px;
   padding: 10px 16px;
   padding-top: max(10px, env(safe-area-inset-top));
@@ -155,14 +158,53 @@ body {
   width: auto;
 }
 
+.brand-label {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap);
+  margin-left: 6px;
+  padding: 0 14px;
+  border-radius: var(--radius);
+  color: var(--ink);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.brand:hover .brand-label {
+  background: var(--bg);
+}
+
+.brand-label.active {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
 /* Auf schmalen Geraeten nur das Symbol - der Schriftzug wuerde die
-   Navigation verdraengen. */
+   Navigation verdraengen. Mit "Dashboard" daneben wird es am Handy eng,
+   deshalb ruecken Polster und Schrift zusammen, statt dass die Kopfzeile
+   ueberlaeuft oder umbricht. */
 @media (max-width: 480px) {
   .brand-logo {
     display: none;
   }
   .brand-symbol {
     display: block;
+  }
+  .app-head {
+    gap: 4px;
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+  .brand-label,
+  .nav-link {
+    padding: 0 8px;
+    font-size: 15px;
+  }
+  .brand-label {
+    margin-left: 2px;
+  }
+  .app-nav {
+    gap: 2px;
   }
 }
 
