@@ -170,10 +170,10 @@ export function SectionCard({
       )}
 
       <Toggle
-        label="Türlaibungen mitzählen"
-        checked={section.countDoorJambs}
-        onChange={(countDoorJambs) => patch({ countDoorJambs })}
-        hint="Aus, wenn die Türen ohne gemauerte Laibung ausgeführt werden."
+        label="Laibung mitzählen"
+        checked={section.countJambs}
+        onChange={(countJambs) => patch({ countJambs })}
+        hint="Laibungsziegel für Fenster und Türen dieses Abschnitts."
       />
 
       <h3 className="sub">Wandlängen</h3>
@@ -284,14 +284,20 @@ export function SectionCard({
         </Button>
       </div>
 
-      {result && <SectionResultView result={result} />}
+      {result && <SectionResultView result={result} countJambs={section.countJambs} />}
       </>
       )}
     </Card>
   )
 }
 
-function SectionResultView({ result }: { result: SectionResult }) {
+function SectionResultView({
+  result,
+  countJambs,
+}: {
+  result: SectionResult
+  countJambs: boolean
+}) {
   return (
     <div className="result">
       <h3 className="sub">Ergebnis</h3>
@@ -309,11 +315,14 @@ function SectionResultView({ result }: { result: SectionResult }) {
           note={`${fmtInt(result.brickPallets)} Paletten · ${fmtInt(result.brickRemainder)} Stk Rest`}
           strong
         />
-        <Stat
-          label="Laibung"
-          value={`${fmtInt(result.jambBricks)} Stk`}
-          note={`${fmtInt(result.jambPallets)} Paletten`}
-        />
+        {/* Abgewaehlt heisst weg - eine Zeile "0 Stk" liest sich wie vergessen. */}
+        {countJambs && (
+          <Stat
+            label="Laibung"
+            value={`${fmtInt(result.jambBricks)} Stk`}
+            note={`${fmtInt(result.jambPallets)} Paletten`}
+          />
+        )}
         <Stat
           label="Ecksteine"
           value={`${fmtInt(result.cornerBricks)} Stk`}

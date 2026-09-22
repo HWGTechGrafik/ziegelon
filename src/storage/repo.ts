@@ -8,7 +8,7 @@
  * Zeitstempel der Sync kaputt.
  */
 import { CATALOG_SEED } from '../domain/catalog'
-import { newId, now } from '../domain/factory'
+import { migrateProject, newId, now } from '../domain/factory'
 import type { BrickType, Project, Settings, Theme } from '../domain/types'
 import { db } from './db'
 
@@ -34,6 +34,10 @@ export async function saveLicense(license: string): Promise<void> {
 
 export async function saveTheme(theme: Theme): Promise<void> {
   await patchSettings({ theme })
+}
+
+export async function saveCountJambs(countJambs: boolean): Promise<void> {
+  await patchSettings({ countJambs })
 }
 
 export async function saveProject(project: Project): Promise<void> {
@@ -110,8 +114,9 @@ export async function importAll(json: string): Promise<ImportSummary> {
       (id) => db.brickTypes.get(id),
       (item) => db.brickTypes.put(item),
     ),
+    // Eine Sicherung kann aus einem aelteren Stand stammen.
     projects: await mergeNewer(
-      data.projects,
+      data.projects.map(migrateProject),
       (id) => db.projects.get(id),
       (item) => db.projects.put(item),
     ),

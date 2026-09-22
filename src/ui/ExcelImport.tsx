@@ -19,7 +19,14 @@ import { fmt } from './format'
 import { navigate } from './router'
 import { Button, Card, TextField, Warnings } from './components'
 
-export function ExcelImport({ brickTypes }: { brickTypes: BrickType[] }) {
+export function ExcelImport({
+  brickTypes,
+  countJambs,
+}: {
+  brickTypes: BrickType[]
+  /** Vorgabe aus den Einstellungen - gilt auch fuer uebernommene Abschnitte. */
+  countJambs: boolean
+}) {
   const fileInput = useRef<HTMLInputElement>(null)
   const [result, setResult] = useState<ImportResult | null>(null)
   const [name, setName] = useState('')
@@ -42,7 +49,7 @@ export function ExcelImport({ brickTypes }: { brickTypes: BrickType[] }) {
     if (!result) return
     setBusy(true)
     try {
-      const project = await buildProject(result, name.trim() || result.projectName, brickTypes)
+      const project = await buildProject(result, name.trim() || result.projectName, brickTypes, countJambs)
       await saveProject(project)
       setResult(null)
       navigate({ view: 'project', id: project.id })
@@ -143,6 +150,7 @@ export async function buildProject(
   result: ImportResult,
   name: string,
   catalog: BrickType[],
+  countJambs: boolean,
 ): Promise<Project> {
   const project = createProject(name)
   const known = [...catalog]
@@ -155,7 +163,7 @@ export async function buildProject(
       known.push(brick)
     }
 
-    const section = createWallSection(brick.id)
+    const section = createWallSection(brick.id, countJambs)
     section.label = imported.sheetName
     section.storeyHeightM = imported.storeyHeightM
     section.outerCorners = imported.outerCorners

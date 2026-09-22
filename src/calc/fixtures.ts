@@ -42,7 +42,7 @@ export const section365: WallSection = {
   storeyHeightM: 3,
   outerCorners: 4,
   bearingCmPerSide: 15,
-  countDoorJambs: true,
+  countJambs: true,
   wallRuns: [run('r1', 10), run('r2', 8), run('r3', 10), run('r4', 8)],
   openings: [
     opening('o1', 'window', 1.5, 1.5, 3),

@@ -106,8 +106,13 @@ export function calcProject(project: Project, brickTypes: BrickType[]): ProjectR
     })
   }
 
+  // Ohne Bedarf faellt eine Zeile weg - ausser es ist schon etwas gebucht.
+  // Sonst verschwaende bestellte Laibung aus der Liste, sobald man sie abwaehlt.
+  const hasBookings = (key: string) =>
+    sumBy(project.orders, key) !== 0 || sumBy(project.stock, key) !== 0
+
   for (const [key, value] of palletTotals) {
-    if (value === 0) continue
+    if (value === 0 && !hasBookings(key)) continue
     const [type, brickTypeId] = key.split(':') as ['brick' | 'jamb' | 'corner', string]
     const suffix =
       type === 'brick' ? '' : type === 'jamb' ? ' – Laibung' : ' – Ecksteine'

@@ -23,6 +23,20 @@ describe('calcProject - Blatt "Bestellung"', () => {
     expect(find(demand, 'lintel:2')).toMatchObject({ required: 10, unit: 'Stück' })
   })
 
+  it('laesst abgewaehlte Laibung weg, solange nichts dafuer gebucht ist', () => {
+    const ohne = { ...project365, sections: [{ ...section365, countJambs: false }] }
+    expect(find(calcProject(ohne, [brick365]).demand, 'jamb:bt-365')).toBeUndefined()
+
+    const order: OrderEntry = {
+      id: 'ord-j', updatedAt: NOW, orderedOn: '2026-01-05',
+      target: { type: 'jamb', brickTypeId: 'bt-365' }, quantity: 1,
+    }
+    const bestellt = { ...ohne, orders: [order] }
+    expect(find(calcProject(bestellt, [brick365]).demand, 'jamb:bt-365')).toMatchObject({
+      required: 0, ordered: 1, open: 0,
+    })
+  })
+
   it('rundet die Ueberleger erst in der Summe auf, nicht je Abschnitt', () => {
     // Derselbe Abschnitt zweimal: 9,125 + 9,125 = 18,25 -> 19.
     // Haetten wir je Abschnitt gerundet, kaemen 20 heraus.

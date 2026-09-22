@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react'
 import logo from './assets/branding/derived/Ziegelon_logo.png'
 import symbol from './assets/branding/derived/Ziegelon_symbol.png'
 import { verifyLicense, type LicenseInfo } from './lib/license'
-import { DEFAULT_THEME, type Theme } from './domain/types'
+import { DEFAULT_COUNT_JAMBS, DEFAULT_THEME, type Theme } from './domain/types'
 import { seedCatalogIfEmpty } from './storage/repo'
 import { useBrickTypes, useProject, useProjects, useSettings } from './storage/hooks'
 import { CatalogView } from './ui/CatalogView'
@@ -63,10 +63,24 @@ export function App() {
       </>
     )
 
-  return <Shell license={license} theme={theme ?? DEFAULT_THEME} />
+  return (
+    <Shell
+      license={license}
+      theme={theme ?? DEFAULT_THEME}
+      countJambs={settings?.countJambs ?? DEFAULT_COUNT_JAMBS}
+    />
+  )
 }
 
-function Shell({ license, theme }: { license: LicenseInfo; theme: Theme }) {
+function Shell({
+  license,
+  theme,
+  countJambs,
+}: {
+  license: LicenseInfo
+  theme: Theme
+  countJambs: boolean
+}) {
   const route = useRoute()
   const projects = useProjects()
   const brickTypes = useBrickTypes()
@@ -124,10 +138,19 @@ function Shell({ license, theme }: { license: LicenseInfo; theme: Theme }) {
         ) : route.view === 'catalog' ? (
           <CatalogView brickTypes={brickTypes} />
         ) : route.view === 'settings' ? (
-          <SettingsView theme={theme} license={license} brickTypes={brickTypes} />
+          <SettingsView
+            theme={theme}
+            countJambs={countJambs}
+            license={license}
+            brickTypes={brickTypes}
+          />
         ) : route.view === 'project' ? (
           answersRoute && lookup?.project ? (
-            <ProjectView project={lookup.project} brickTypes={brickTypes} />
+            <ProjectView
+              project={lookup.project}
+              brickTypes={brickTypes}
+              countJambs={countJambs}
+            />
           ) : (
             <p className="empty">Wird geladen …</p>
           )

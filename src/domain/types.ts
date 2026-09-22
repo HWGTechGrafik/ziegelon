@@ -80,14 +80,11 @@ export interface WallSection extends Syncable {
    */
   bearingCmPerSide: number
   /**
-   * Zaehlen Tuerlaibungen mit? Tueren haben gemauerte Laibungen wie Fenster,
-   * deshalb ist das der Normalfall. Abwaehlbar, weil es Ausfuehrungen ohne
-   * gemauerte Tuerlaibung gibt.
-   *
-   * Achtung: die alte Excel hatte fuer Tueren gar keine Laibungsspalte und
-   * rechnete damit immer so, als waere das hier `false`.
+   * Zaehlen Laibungsziegel mit - fuer Fenster und Tueren gemeinsam? Aus
+   * heisst: keine Laibung in Ergebnis, Bedarf und Bestellung. Neue Abschnitte
+   * bekommen die Vorgabe aus den Einstellungen (Settings.countJambs).
    */
-  countDoorJambs: boolean
+  countJambs: boolean
   wallRuns: WallRun[]
   openings: Opening[]
 }
@@ -126,6 +123,8 @@ export interface Settings extends Syncable {
   license?: string
   /** Fehlt der Wert, gilt 'system'. */
   theme?: Theme
+  /** Vorgabe fuer neue Wandabschnitte. Fehlt der Wert, gilt DEFAULT_COUNT_JAMBS. */
+  countJambs?: boolean
 }
 
 /** 'system' folgt der Einstellung des Betriebssystems. */
@@ -153,5 +152,9 @@ export const BEARING_MIN_CM = 12
 export const BEARING_MAX_CM = 25
 export const BEARING_DEFAULT_CM = 15
 
-/** Vorgabe fuer neue Wandabschnitte: Tuerlaibungen zaehlen mit. */
-export const DEFAULT_COUNT_DOOR_JAMBS = true
+/**
+ * Vorgabe fuer neue Wandabschnitte: keine Laibung. So wird auf den
+ * Baustellen gearbeitet; wer es anders braucht, stellt es in den
+ * Einstellungen um.
+ */
+export const DEFAULT_COUNT_JAMBS = false

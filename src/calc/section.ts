@@ -120,11 +120,11 @@ export function calcSection(section: WallSection, brick: BrickType): SectionResu
 
   const bricks = Math.max(0, netAreaSqm) * brick.bricksPerSqm
 
-  // Tuerlaibungen sind je Abschnitt abwaehlbar - die alte Excel kannte sie gar nicht.
-  const jambSource = section.countDoorJambs
-    ? section.openings
-    : section.openings.filter((o) => o.kind === 'window')
-  const jambBricks = jambSource.reduce((sum, o) => sum + jambBricksForOpening(o), 0)
+  // Laibung je Abschnitt abwaehlbar. Aus heisst null - dann taucht sie auch
+  // im Bedarf nicht auf, der Zeilen ohne Menge weglaesst.
+  const jambBricks = section.countJambs
+    ? section.openings.reduce((sum, o) => sum + jambBricksForOpening(o), 0)
+    : 0
 
   const cornerBricks = (section.storeyHeightM * section.outerCorners) / COURSE_HEIGHT_M
 

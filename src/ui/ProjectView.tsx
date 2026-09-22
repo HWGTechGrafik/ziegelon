@@ -20,9 +20,12 @@ type Tab = 'walls' | 'demand'
 export function ProjectView({
   project,
   brickTypes,
+  countJambs,
 }: {
   project: Project
   brickTypes: BrickType[]
+  /** Vorgabe aus den Einstellungen fuer neu angelegte Abschnitte. */
+  countJambs: boolean
 }) {
   const [tab, setTab] = useState<Tab>('walls')
   // Ein gerade angelegter oder kopierter Abschnitt geht offen auf. Sonst
@@ -41,7 +44,7 @@ export function ProjectView({
   const addSection = () => {
     const first = brickTypes[0]
     if (!first) return
-    const abschnitt = createWallSection(first.id)
+    const abschnitt = createWallSection(first.id, countJambs)
     setZuletztAngelegt(abschnitt.id)
     update({ ...project, sections: [...project.sections, abschnitt] })
   }

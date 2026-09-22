@@ -69,11 +69,11 @@ describe('calcSection - komplette Rechenkette eines Excel-Blatts', () => {
     expect(r.jambRemainder).toBe(36)
   })
 
-  it('laesst die Tuerlaibungen weg, wenn der Schalter aus ist - so rechnete die Excel', () => {
-    const noDoorJambs = calcSection({ ...section365, countDoorJambs: false }, brick365)
-    expect(noDoorJambs.jambBricks).toBe(56) // nur die beiden Fensterzeilen
-    expect(noDoorJambs.jambPallets).toBe(2)
-    expect(noDoorJambs.jambRemainder).toBe(52)
+  it('rechnet gar keine Laibung, wenn der Schalter aus ist - auch nicht fuer Fenster', () => {
+    const ohne = calcSection({ ...section365, countJambs: false }, brick365)
+    expect(ohne.jambBricks).toBe(0)
+    expect(ohne.jambPallets).toBe(0)
+    expect(ohne.jambRemainder).toBe(0)
   })
 
   it('rechnet Ecksteine wie Excel P9 / P18', () => {

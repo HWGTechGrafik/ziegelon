@@ -1,14 +1,14 @@
 /**
- * Einstellungen: Darstellung, Uebernahme aus der alten Excel, Sicherung und
- * Auskunft zur Lizenz.
+ * Einstellungen: Darstellung, Vorgaben fuer neue Wandabschnitte, Uebernahme
+ * aus der alten Excel, Sicherung und Auskunft zur Lizenz.
  */
 import { DEFAULT_THEME, type BrickType, type Theme } from '../domain/types'
 import { formatDate, type LicenseInfo } from '../lib/license'
 import { IS_DEVELOPMENT_KEY } from '../lib/license-key'
-import { saveTheme } from '../storage/repo'
+import { saveCountJambs, saveTheme } from '../storage/repo'
 import { BackupCard } from './BackupCard'
 import { ExcelImport } from './ExcelImport'
-import { Card } from './components'
+import { Card, Toggle } from './components'
 import { applyTheme } from './theme'
 import { versionLang } from '../version'
 
@@ -20,10 +20,12 @@ const CHOICES: Array<{ value: Theme; label: string; hint: string }> = [
 
 export function SettingsView({
   theme,
+  countJambs,
   license,
   brickTypes,
 }: {
   theme: Theme | undefined
+  countJambs: boolean
   license: LicenseInfo
   brickTypes: BrickType[]
 }) {
@@ -59,13 +61,22 @@ export function SettingsView({
         </p>
       </Card>
 
+      <Card title="Vorgaben">
+        <Toggle
+          label="Laibung mitzählen"
+          checked={countJambs}
+          onChange={(next) => void saveCountJambs(next)}
+          hint="Gilt für neu angelegte Wandabschnitte. Bestehende behalten ihre Einstellung und lassen sich dort einzeln umschalten."
+        />
+      </Card>
+
       {/*
         Steht hier und nicht auf der Startseite: die Uebernahme aus der alten
         Mappe ist ein Schritt, den man je Bauvorhaben einmal geht. Auf der
         Startseite nahm sie dauerhaft Platz weg von dem, was man taeglich
         braucht - der Liste der Bauvorhaben.
       */}
-      <ExcelImport brickTypes={brickTypes} />
+      <ExcelImport brickTypes={brickTypes} countJambs={countJambs} />
 
       <BackupCard />
 

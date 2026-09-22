@@ -4,7 +4,7 @@
  */
 import {
   BEARING_DEFAULT_CM,
-  DEFAULT_COUNT_DOOR_JAMBS,
+  DEFAULT_COUNT_JAMBS,
   type Opening,
   type OpeningKind,
   type Project,
@@ -33,7 +33,10 @@ export function createProject(name: string): Project {
   }
 }
 
-export function createWallSection(brickTypeId: string): WallSection {
+export function createWallSection(
+  brickTypeId: string,
+  countJambs = DEFAULT_COUNT_JAMBS,
+): WallSection {
   return {
     id: newId(),
     updatedAt: now(),
@@ -41,7 +44,7 @@ export function createWallSection(brickTypeId: string): WallSection {
     storeyHeightM: 2.75,
     outerCorners: 4,
     bearingCmPerSide: BEARING_DEFAULT_CM,
-    countDoorJambs: DEFAULT_COUNT_DOOR_JAMBS,
+    countJambs,
     wallRuns: [],
     openings: [],
   }
@@ -62,3 +65,25 @@ export const createOpening = (kind: OpeningKind): Opening => ({
   heightM: kind === 'door' ? 2 : 1.25,
   count: 1,
 })
+
+/**
+ * Bringt ein Bauvorhaben aus einem aelteren Stand auf das heutige Format.
+ *
+ * Frueher gab es nur den Schalter `countDoorJambs`; Fensterlaibungen zaehlten
+ * immer. Heute schaltet `countJambs` die ganze Laibung. Wer die Tuerlaibung
+ * abgewaehlt hatte, wollte keine Laibung - deshalb wird aus false ein false.
+ * Fehlt beides, stammt der Abschnitt aus der Zeit vor dem Schalter: an.
+ */
+export function migrateProject(project: Project): Project {
+  if (project.sections.every((s) => typeof s.countJambs === 'boolean')) return project
+  return {
+    ...project,
+    sections: project.sections.map((section) => {
+      if (typeof section.countJambs === 'boolean') return section
+      const { countDoorJambs, ...rest } = section as WallSection & {
+        countDoorJambs?: boolean
+      }
+      return { ...rest, countJambs: countDoorJambs ?? true }
+    }),
+  }
+}
