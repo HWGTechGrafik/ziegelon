@@ -5,8 +5,9 @@
  * schon gelaufen sind - 'npm run auslieferung' erledigt beides davor.
  *
  * Ergebnis:
- *   auslieferung/Ziegelon/            der Ordner, den der Kunde bekommt
- *   auslieferung/Ziegelon-Windows.zip dasselbe gepackt, zum Verschicken
+ *   auslieferung/Ziegelon/                    der Ordner, den der Kunde bekommt,
+ *                                             mit Ziegelon-<version>.exe
+ *   auslieferung/Ziegelon-<version>-Windows.zip dasselbe gepackt, zum Verschicken
  *
  * Der Ordner steht in der .gitignore. Die exe ist ueber 100 MB gross und
  * gehoert nicht in die Versionsverwaltung.
@@ -33,13 +34,18 @@ const gebaut = join(
   wurzel,
   'windows/bin/Release/net9.0-windows/win-x64/publish/Ziegelon.exe',
 )
-const ziel = join(wurzel, 'auslieferung')
-const ordner = join(ziel, 'Ziegelon')
-const zip = join(ziel, 'Ziegelon-Windows.zip')
-
 // Dieselbe Nummer, die auch in der Fusszeile der App und in den
 // Dateieigenschaften der exe steht.
 const version = JSON.parse(readFileSync(join(wurzel, 'package.json'), 'utf8')).version
+
+// Die Nummer steht auch im Dateinamen: auf dem Desktop des Kunden sieht man
+// so ohne Eigenschaften-Dialog, welche Fassung dort liegt. Gefahrlos, weil
+// die Daten an einem festen Ort liegen und nicht am Namen der exe haengen.
+const exeName = `Ziegelon-${version}.exe`
+const ziel = join(wurzel, 'auslieferung')
+const ordner = join(ziel, 'Ziegelon')
+const zipName = `Ziegelon-${version}-Windows.zip`
+const zip = join(ziel, zipName)
 
 // Der Text fuer den Kunden. Umlaute ausgeschrieben - das liest ein Mensch.
 const ANLEITUNG = `Ziegelon für Windows
@@ -54,8 +60,13 @@ gegen den Restbestand.
 
 Starten
 -------
-Ziegelon.exe doppelklicken. Eine Installation gibt es nicht - diese eine Datei
+${exeName} doppelklicken. Eine Installation gibt es nicht - diese eine Datei
 ist alles, was gebraucht wird. Sie lässt sich auch von einem USB-Stick starten.
+
+Die Nummer im Dateinamen ist die Version. Bei einer neuen Fassung die alte
+Datei einfach löschen und die neue an ihre Stelle legen - die Bauvorhaben
+bleiben dabei erhalten, sie liegen nicht in der Datei. Eine Verknüpfung auf
+dem Desktop muss danach neu angelegt werden.
 
 Beim allerersten Start meldet sich Windows möglicherweise mit "Der Computer
 wurde geschützt". Auf "Weitere Informationen" und dann "Trotzdem ausführen"
@@ -129,10 +140,10 @@ if (!existsSync(gebaut)) {
 rmSync(ziel, { recursive: true, force: true })
 mkdirSync(ordner, { recursive: true })
 
-copyFileSync(gebaut, join(ordner, 'Ziegelon.exe'))
+copyFileSync(gebaut, join(ordner, exeName))
 // Auch gleich nach release/, damit beide Stellen denselben Stand tragen.
 mkdirSync(join(wurzel, 'release'), { recursive: true })
-copyFileSync(gebaut, join(wurzel, 'release/Ziegelon.exe'))
+copyFileSync(gebaut, join(wurzel, 'release', exeName))
 
 // Byte-Reihenfolge-Marke und CRLF: so zeigt jede Windows-Fassung des Editors
 // die Umlaute richtig an, auch eine aeltere.
@@ -156,5 +167,5 @@ execFileSync(
 
 const mb = (pfad) => (statSync(pfad).size / 1024 / 1024).toFixed(1)
 console.log(`Version: ${version}`)
-console.log(`Ordner:  auslieferung/Ziegelon (${mb(join(ordner, 'Ziegelon.exe'))} MB)`)
-console.log(`Gepackt: auslieferung/Ziegelon-Windows.zip (${mb(zip)} MB)`)
+console.log(`Ordner:  auslieferung/Ziegelon/${exeName} (${mb(join(ordner, exeName))} MB)`)
+console.log(`Gepackt: auslieferung/${zipName} (${mb(zip)} MB)`)
